@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>风间宿的博客</title>
+  
+  <subtitle>攀那一阶一阶，看那一景一景</subtitle>
+  <link href="http://www.fengjiansu.github.io/atom.xml" rel="self"/>
+  
+  <link href="http://www.fengjiansu.github.io/"/>
+  <updated>2022-01-01T09:31:32.073Z</updated>
+  <id>http://www.fengjiansu.github.io/</id>
+  
+  <author>
+    <name>风间宿</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="http://www.fengjiansu.github.io/zh/undefined/"/>
+    <id>http://www.fengjiansu.github.io/zh/undefined/</id>
+    <published>2021-12-31T13:55:01.249Z</published>
+    <updated>2022-01-01T09:31:32.073Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1&gt;DO使用&lt;/h1&gt;
+&lt;h2 id=&quot;购买服务器&quot;&gt;购买服务器&lt;/h2&gt;
+&lt;p&gt;因为centos8停止更新的缘故，选了debian11，服务器选旧金山（圣弗朗西斯科）区域只能选3不知道为什么，密码时直接选择ssh，windows可以用puttygen生成公钥[&lt;a</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>操作系统考试</title>
+    <link href="http://www.fengjiansu.github.io/zh/os/"/>
+    <id>http://www.fengjiansu.github.io/zh/os/</id>
+    <published>2021-06-19T16:00:00.000Z</published>
+    <updated>2021-06-20T06:02:04.552Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2</summary>
+        
+      
+    
+    
+    
+    
+    <category term="大三" scheme="http://www.fengjiansu.github.io/tags/%E5%A4%A7%E4%B8%89/"/>
+    
+    <category term="考试" scheme="http://www.fengjiansu.github.io/tags/%E8%80%83%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>网络协议考试</title>
+    <link href="http://www.fengjiansu.github.io/zh/protocol-analysis/"/>
+    <id>http://www.fengjiansu.github.io/zh/protocol-analysis/</id>
+    <published>2021-06-02T16:00:00.000Z</published>
+    <updated>2021-06-27T23:19:50.235Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;考试&lt;/p&gt;
+&lt;!-- 考试 --&gt;
+&lt;h2 id=&quot;选择-20&quot;&gt;选择 20&lt;/h2&gt;
+&lt;p&gt;源地址字段不能包含多播或广播地址Cannot contain a multicast or broadcast address&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Which of</summary>
+        
+      
+    
+    
+    
+    
+    <category term="大三" scheme="http://www.fengjiansu.github.io/tags/%E5%A4%A7%E4%B8%89/"/>
+    
+    <category term="考试" scheme="http://www.fengjiansu.github.io/tags/%E8%80%83%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java高级考试</title>
+    <link href="http://www.fengjiansu.github.io/zh/java/"/>
+    <id>http://www.fengjiansu.github.io/zh/java/</id>
+    <published>2021-05-31T16:00:00.000Z</published>
+    <updated>2021-06-02T10:54:15.396Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;考试&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="大三" scheme="http://www.fengjiansu.github.io/tags/%E5%A4%A7%E4%B8%89/"/>
+    
+    <category term="考试" scheme="http://www.fengjiansu.github.io/tags/%E8%80%83%E8%AF%95/"/>
+    
+    <category term="java" scheme="http://www.fengjiansu.github.io/tags/java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>微机考试</title>
+    <link href="http://www.fengjiansu.github.io/zh/microcomputer-exam/"/>
+    <id>http://www.fengjiansu.github.io/zh/microcomputer-exam/</id>
+    <published>2021-05-30T16:00:00.000Z</published>
+    <updated>2021-06-02T06:48:44.256Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;考试&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="大三" scheme="http://www.fengjiansu.github.io/tags/%E5%A4%A7%E4%B8%89/"/>
+    
+    <category term="考试" scheme="http://www.fengjiansu.github.io/tags/%E8%80%83%E8%AF%95/"/>
+    
+    <category term="router" scheme="http://www.fengjiansu.github.io/tags/router/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>网络协议分析实验报告</title>
+    <link href="http://www.fengjiansu.github.io/zh/internet-protocol-lab/"/>
+    <id>http://www.fengjiansu.github.io/zh/internet-protocol-lab/</id>
+    <published>2021-05-09T16:00:00.000Z</published>
+    <updated>2021-06-19T09:24:06.671Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;arp地址解析协议&quot;&gt;ARP地址解析协议&lt;/h2&gt;
+&lt;p&gt;在网络层和链路层接口的一部分运行&lt;br&gt;
+ARP是地址解析协议,用于实现IP地址到MAC地址的映射&lt;/p&gt;
+&lt;p&gt;过程&lt;br&gt;
+1、</summary>
+        
+      
+    
+    
+    
+    
+    <category term="大三" scheme="http://www.fengjiansu.github.io/tags/%E5%A4%A7%E4%B8%89/"/>
+    
+    <category term="intetnet protocol" scheme="http://www.fengjiansu.github.io/tags/intetnet-protocol/"/>
+    
+    <category term="报告" scheme="http://www.fengjiansu.github.io/tags/%E6%8A%A5%E5%91%8A/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>微机上机教程</title>
+    <link href="http://www.fengjiansu.github.io/zh/micro-computer/"/>
+    <id>http://www.fengjiansu.github.io/zh/micro-computer/</id>
+    <published>2021-05-08T16:00:00.000Z</published>
+    <updated>2021-06-02T06:48:25.256Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;上机&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="大三" scheme="http://www.fengjiansu.github.io/tags/%E5%A4%A7%E4%B8%89/"/>
+    
+    <category term="上机教程" scheme="http://www.fengjiansu.github.io/tags/%E4%B8%8A%E6%9C%BA%E6%95%99%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>微机学习笔记</title>
+    <link href="http://www.fengjiansu.github.io/zh/micro-note/"/>
+    <id>http://www.fengjiansu.github.io/zh/micro-note/</id>
+    <published>2021-05-08T16:00:00.000Z</published>
+    <updated>2021-06-02T06:48:19.680Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;课本&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="大三" scheme="http://www.fengjiansu.github.io/tags/%E5%A4%A7%E4%B8%89/"/>
+    
+    <category term="笔记" scheme="http://www.fengjiansu.github.io/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="配置命令" scheme="http://www.fengjiansu.github.io/tags/%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://www.fengjiansu.github.io/zh/suibi/"/>
+    <id>http://www.fengjiansu.github.io/zh/suibi/</id>
+    <published>2016-03-30T13:18:02.000Z</published>
+    <updated>2021-06-10T01:45:22.893Z</updated>
+    
+    
+    <summary type="html">有东西被加密了, 请输入密码查看.</summary>
+    
+    
+    
+    
+    <category term="作为随笔加密" scheme="http://www.fengjiansu.github.io/tags/%E4%BD%9C%E4%B8%BA%E9%9A%8F%E7%AC%94%E5%8A%A0%E5%AF%86/"/>
+    
+  </entry>
+  
+</feed>

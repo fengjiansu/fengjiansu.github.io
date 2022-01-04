@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>java高级考试 |  风间宿的博客</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css"
+      />
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+       
+ 
+
+      <!-- mermaid -->
+      
+    <link rel="alternate" href="/atom.xml" title="风间宿的博客" type="application/atom+xml">
+<link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-java高级考试"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  java高级考试
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/zh/java/" class="article-date">
+  <time datetime="2021-05-31T16:00:00.000Z" itemprop="datePublished">2021-06-01</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">8.5k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">35 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>考试</p>
+<a id="more"></a>
+<h2 id="选择20道">选择20道</h2>
+<p>MVC Model 模型 View视图 Controller 控制器</p>
+<p>三层架构分为视图层(View层) 、服务层(Service层) 与 持久层(Dao层) 目的：<br>
+降低系统的耦合度！</p>
+<p>AspectJ是一个基于Java语言的AOP框架<br>
+Aspectj开发方式有2种 基于XML配置开发AspectJ 基于注解开发AspectJ<br>
+使用 <strong>@Aspect</strong> 注解定义一个切面类，由于该类在Spring中是作为组件使用的，所以还需要使用 <strong>@Component</strong>注解。<br>
+使用 <strong>@Pointcut</strong>注解切入点表达式，并通过定义方法来表示切入点名称。<br>
+在每个通知方法上添加相应的注解，并将切入点名称作为参数传递给需要执行增强的通知方法<br>
+@Before(“myPointCut()”) 前置通知<br>
+@AfterReturning 后置返回通知<br>
+@Around 环绕通知<br>
+@AfterThrowing 异常通知<br>
+@After 后置通知</p>
+<p>注解目标类  @Repository(“testDao”)</p>
+<p>Spring jdbcTemplate 的常用方法 是 update和query rowMapper 将结果集映射到用户自定义类中</p>
+<p>编程式事务管理有2种 基于底层API的编程式事务管理 基于TransactionTemplate的编程式事务管理</p>
+<p>声明式事务管理可以通过两种方式来实现 ，一是基于XML的方式，一是基于@Transactional注解的方式</p>
+<p>MyBatis 是一个基于Java的持久层框架 包括SQL Maps和Data<br>
+Access Objects（DAO）</p>
+<p>映射器一般不使用注解完成的原因<br>
+一，面对复杂的SQL会显得无力；二，注解的可读性较差；三，注解丢失了XML上下文相互引用的功能</p>
+<p>在Spring MVC中，最重要的两个注解类型是Controller和RequestMapping</p>
+<p>RequestMapping有方法级别也有类级别的注解value属性是RequestMapping注解的默认属性，如果只有一个value属性，则可以省略该属性。</p>
+<p>数据绑定的含义<br>
+绑定请求参数输入值到领域模型 模型数据到视图的绑定 模型数据到表单元素的绑定</p>
+<p>Spring MVC的拦截器（Interceptor）与Java Servlet的过滤器（Filter）类似，它主要用于拦截用户的请求并做相应的处理。通常应用在权限验证、记录请求信息的日志、判断用<br>
+户是否登录等功能上。</p>
+<p>在Spring MVC框架中，定义一个拦截器，需要对拦截器进行定义和配置。定义一个拦截器可以通过两种方式：<br>
+一种是通过实现HandlerInterceptor接口或继承HandlerInterceptor接口的实现类来定义；<br>
+一种是通过实现WebRequestInterceptor接口或继承WebRequestInterceptor接口的实现类来定义。</p>
+<p>preHandle方法在控制器的处理请求方法前执行</p>
+<p>“postHandle方法在控制器的处理请求方法调用之后，解析视图之前执行”</p>
+<p>“afterCompletion方法在控制器的处理请求方法执行完成后执行，即视图渲染结束之后执行”)</p>
+<h2 id="判断10道">判断10道</h2>
+<p>Spring目的是为了解决企业级应用开发的业务逻辑层和其他各层的耦合问题</p>
+<p>bean的默认作用域是singleton 即容器中只有一个实例<br>
+当作用域是prototype时<br>
+Spring容器每次获取prototype定义的Bean，容器都将创建一个新的Bean实例。</p>
+<p>Spring IoC容器的设计主要是基于<strong>BeanFactory</strong>和<strong>ApplicationContext</strong>两个接口。二者的主要区别在于，如果 Bean 的某一个属性没有注入，则使用 BeanFacotry 加载后，在第一次调用 getBean() 方法时会<strong>抛出异常</strong>，而 ApplicationContext 则在初始化时自检，这样有利于<strong>检查所依赖的属性是否注入。</strong></p>
+<p>构造方法注入 指 IoC 容器使用构造方法注入被依赖的实例。基于构造器的 DI 通过调用带参数的构造方法实现，每个参数代表一个依赖<br>
+Spring框架可以采用Java的<strong>反射机制</strong>，通过构造方法完成<strong>依赖注入</strong></p>
+<p>Bean使用XML装配时使用构造方法注入，需要提供带参数的构造方法</p>
+<p>使用简单的 XML或注解用于配置和原始映射，将接口和Java的 POJOs（Plain Old Java Objects，普通的Java对象）映射成数据库中的记录。</p>
+<p>映射器由一个接口加上XML文件（SQL映射文件）组成</p>
+<p>使用Map不能限定其传递的数据类型</p>
+<p>在开发Spring MVC应用时，需要在web.xml中部署DispatcherServlet</p>
+<p>*“@Controller”表示IndexController的实例是一个控制器<br>
+@Controller相当于@Controller(“indexController”)<br>
+或@Controller(value = “indexController”)</p>
+<p>在控制类中每个请求处理方法可以有多个不同类型的参数，以及一个多种类型的返回结果</p>
+<p>使用@ModelAttribute(“user”)与model.addAttribute(“user”, user)功能相同</p>
+<p>重定向是将用户从当前处理请求定向到另一个视图（例如JSP）或处理请求，以前的请求（request）中存放的信息全部失效，并进入一个新的request作用域；<br>
+转发是将用户对当前处理的请求转发给另一个视图或处理请求，以前的request中存放的信息不会失效。<br>
+转发是服务器行为，重定向是客户端行为。<br>
+控制器类中处理方法的return语句默认就是转发实现，只不过实现的是转发到视图。<br>
+转发到一个请求方法（同一个控制器类里，可省略/index/）<br>
+return “forward:/index/isLogin”;<br>
+重定向到一个请求方法<br>
+return “redirect:/index/isRegister”;<br>
+转发到一个视图<br>
+return “register”;</p>
+<p>Autowired注解类型将依赖注入到一个属性（成<br>
+员变量）或方法，<br>
+在 Spring MVC 中 ， 为了能被作为依赖注入 ， 类必须使用<br>
+@Service注解类型注明为（一个服务）。<br>
+另外，还需要在配置文件中使用&lt;context:component-scan base-package=“基本包”/&gt;元素来扫<br>
+描依赖基本包</p>
+<ol>
+<li>
+<p>Spring中的所有配置信息，都必须配置在一applicationContext.xml中。</p>
+<p>参考答案 : 错</p>
+<p>答案说明 : 可以将配置信息分散到多个配置文件中</p>
+</li>
+<li>
+<p>查询操作也会被程序纳入事务管理范围。</p>
+<p>参考答案 : 错</p>
+<p>答案说明 : 查询操作不需要事务管理</p>
+</li>
+<li>
+<p>@Autowired注解需要标注在Service层的实现类上，这样才能实现依赖注入。</p>
+<p>参考答案 : 错</p>
+<p>答案说明 : 标注在属性上</p>
+</li>
+<li>
+<p>在web.xml中，配置信息&lt; url-pattern&gt;/中的“/”表示拦截除jsp外的所有请求。</p>
+<p>参考答案 : 对</p>
+<p>答案说明 :</p>
+</li>
+<li>
+<p>Spring与Spring MVC，Spring MVC与MyBatis需要相互整合。</p>
+<p>参考答案 : 错</p>
+</li>
+<li>
+<p>Aspect： 允许有多个切点和多个通知组合<br>
+对</p>
+</li>
+<li>
+<p>JDK动态代理是java.lang.reflect.*包提供的方式，它必须借助一个接口才能产生代理对象。因此，对于使用业务接口的类，Spring默认使用JDK动态代理实现AOP,对于没有提供接口的类只能采用CGLIB动态代理<br>
+对</p>
+</li>
+<li>
+<p>MyBatis的核心配置文件的元素节点是有先后顺序的,不可改变<br>
+对</p>
+</li>
+</ol>
+<h2 id="简答5道">简答5道</h2>
+<ol>
+<li>
+<p>Spring的核心容器<br>
+Spring的核心容器是其他模块建立的基础，由Spring-core、Spring-beans、Springcontext、Spring-Context-support和Spring-expression（Spring表达式语言）等模块组成。</p>
+<ul>
+<li>Spring-core模块：提供了框架的基本组成部分，包括控制反转（Inversion of Control，IoC）和依赖注入（Dependency Injection，DI）功能。</li>
+<li>Spring-beans模块：提供了BeanFactory，是工厂模式的一个经典实现，Spring将管理对象称为Bean。</li>
+<li>Spring-context模块：建立在Core和Beans模块基础上，提供一个框架式的对象访问方式，是访问定义和配置的任何对象的媒介。ApplicationContext接口是Context模块的焦点。</li>
+<li>Spring-context-support模块：支持整合第三方库到Spring应用程序上下文，特别是用于高速缓存（EhCache，JCache）和任务调度（CommonJ，Quartz）的支持。</li>
+<li>Spring-expression模块：提供了强大的表达式语言去支持运行时查询和操作对象图。</li>
+</ul>
+</li>
+<li>
+<p>什么是IOC DI 有哪些优点<br>
+控制反转（Inversion of Control，IoC），是Spring框架的核心，用来<strong>消减计算机程序的耦合问题。</strong><br>
+对象的实例不再由调用者创建，而由Spring容器来创建。控制权由调用者转移到容器，控制权发生了反转。<br>
+控制反转是一种通过描述（在Spring中可以是XML或注解）并通过第三方去产生或获取特定对象的方式。在Spring中实现控制反转的是IoC容器，其实现方法是<strong>依赖注入</strong><br>
+依赖注入（Dependency Injection，DI）是IoC的另外一种说法，只是从不同的角度，描述相同的概念。<br>
+从Spring容器角度来看，Spring容器负责将<strong>被依赖对象赋值给调用者的成员变量</strong>，相当于为<strong>调用者注入它所依赖的实例</strong>，这就是Spring的依赖注入</p>
+</li>
+<li>
+<p>Bean的实例化有哪几种常见的方法？</p>
+<ul>
+<li>实例化Bean有三种方式：构造方法实例化、静态工厂实例化和实例工厂实例化（其中，最常用的实例方法是构造方法实例化）</li>
+<li>调用Bean对应类中无参数构造方法来实例化Bean，这种方式称为构造方法实例化</li>
+<li>在工厂类BeanStaticFactory中创建一个静态方法来创建Bean的实例。在配置Bean时,class属性指定静态工厂类，同时使用factory-method属性指定工厂类中的静态方法</li>
+<li>在BeanInstanceFactory工厂类中创建一个实例方法来创建Bean的实例。在配置Bean时使用factory-bean属性指定配置的实例工厂，同时使用factory-method属性指定实例工厂中的实例方法。</li>
+</ul>
+</li>
+<li>
+<p>简述基于注解的装配方式的基本用法。</p>
+<ul>
+<li>@Component。该注解是一个泛化的概念，仅仅表示一个组件对象（Bean），可以作用在任何层次上</li>
+<li>@Repository该注解用于将数据访问层（DAO）的类标识为Bean，即注解*<strong>数据访问层Bean</strong>，其功能与@Component()相同。</li>
+<li>@Service该注解用于标注一个业务逻辑组件类（Service层），其功能与@Component()相同。<strong>表示定义一个bean，自动根据bean的类名实例化一个首写字母为小写的bean。getBean的默认名称是类名（头字母小写），如果想自定义，可以@Service(“aaaaa”) 这样来指定</strong>，这种bean默认是单例的，如果想改变，可以使用@Service(“beanName”)@Scope(“prototype”) 来改变。</li>
+<li>@Controller该注解用于标注一个控制器组件类（Spring MVC的Controller），其功能与@Component()相同。</li>
+<li>@Autowired该注解可以对类成员变量、方法及构造方法进行标注，完成自动装配的工作。<strong>通过@Autowired的使用来消除setter 和getter方法。默认按照Bean的类型进行装配。</strong></li>
+<li>@Resource该注解与@Autowired功能一样。区别在于，该注解<strong>默认是按照名称来装配注入的</strong>，只有当找不到与名称匹配的Bean才会按照类型来装配注入；而@Autowired默认按照Bean的类型进行装配</li>
+<li>@Qualifie与@Autowired注解配合使用。当@Autowired注解需要按照名称来装配注入，则需要结合该注解一起使用，Bean的实例名称由@Qualifier注解的参数指定。</li>
+</ul>
+</li>
+<li>
+<p>@Autowired和＠Resource有什么区别？<br>
+该注解@Autowired功能一样。区别在于，该注解默认是按照名称来装配注入的，只有当找不到与名称匹配的Bean才会按照类型来装配注入；而@Autowired默认按照Bean的类型进行装配，如果想按照名称来装配注入，则需要结合@Qualifier注解一起使用</p>
+</li>
+<li>
+<p>什么是事务管理？<br>
+Spring的声明式事务管理，是通过AOP技术实现的事务管理，其本质是对<code>方法前后进行拦截</code>，然后<strong>在目标方法开始之前创建或者加入一个事务，在执行完目标方法之后根据执行情况提交或者回滚事务</strong>。</p>
+<p>优点是<code>不需要通过编程的方式管理事务</code>，因而不需要在业务逻辑代码中掺杂事务处理的代码，只需相关的事务规则声明，便可以将事务规则应用到业务逻辑中。通常情况下，在开发中使用声明式事务处理，不仅因为其简单，更主要是因为这样使得<code>纯业务代码不被污染，极大方便后期的代码维护</code></p>
+</li>
+<li>
+<p>基于@Transactional注解的声明式事务管理<br>
+当对Service层添加时只能针对public属性范围内的方法添加</p>
+<p>@Transactional注解可以作用于接口、接口方法、类以及类方法上。</p>
+<p>当作用于类上时，该类的所有public方法将都具有该类型的事务属性，同时，也可以在方法级别使用该注解来覆盖类级别的定义。<br>
+虽然@Transactional注解可以作用于接口、接口方法、类以及类方法上，但是Spring小组建议不要在接口或者接口方法上使用该注解，因为这只有在使用基于接口的代理时它才会生效。</p>
+</li>
+<li>
+<p>什么是AOP,AOP的术语有哪些<br>
+AOP(Aspect Oriented Programming)采取横向抽取机制，即将分散在各个方法中的重复代码提取出来，然后在程序编译或运行阶段，再将这些抽取出来的代码应用到需要执行的地方。</p>
+<ul>
+<li>Joinpoint(连接点) 是指那些被拦截到的点，在Spring中，可以被动态代理拦截目标类的方法。</li>
+<li>Pointcut(切入点) 是指要对哪些Joinpoint进行拦截，即被拦截的连接点。</li>
+<li>Advice(通知) ：是指拦截到Joinpoint之后要做的事情，即对切入点增强的内容。 方法级别的增强</li>
+<li>Introduction(引介指的是一种特殊方式的Advice)类级别的增强在原有类上添加一个属性或方法</li>
+<li>Target(目标) 是指代理的目标对象。</li>
+<li>Weaving(织入)是指把增强代码(Advice)应用到目标上，生成代理对象的过程。</li>
+<li>Proxy(代理) 是指生成的代理对象。</li>
+<li>Aspect(切面)是切入点Pointcut和通知的结合</li>
+</ul>
+</li>
+<li>
+<p>简述MyBatis的工作原理即流程</p>
+<ul>
+<li>读取MyBatis配置文件 mybatis-config.xml</li>
+<li>加载映射文件 Mapper1.xml</li>
+<li>构造会话工厂 SqlSessionFactory</li>
+<li>创建会话对象 SqlSession</li>
+<li>Executor 执 行 器</li>
+<li>MappedStatement对象</li>
+<li>输入参数映射 输入参数映射过程类似于JDBC对preparedStatement对象设置参数的过程。</li>
+<li>输出结果映射</li>
+</ul>
+</li>
+<li>
+<p>简述Mybatis与Spring整合过程</p>
+<ul>
+<li>导入相关JAR包</li>
+<li>在Spring中配置MyBatis工厂</li>
+<li>使用Spring管理MyBatis的数据操作接口</li>
+</ul>
+</li>
+<li>
+<p>简述Spring MVC工作原理即流程<br>
+SpringMVC框架主要由DispatcherServlet、处理器映射、控制器、视图解析器、视图组成，SpringMVC的工作流程如下：<br>
+（1）客户端请求提交到DispatcherServlet；<br>
+（2）由DispatcherServlet控制器寻找一个或多个HandlerMapping，找到处理请求的<br>
+Controller；<br>
+（3）DispatcherServlet将请求提交到Controller；<br>
+（4）Controller调用业务逻辑处理后返回ModelAndView；<br>
+（5）DispatcherServlet寻找一个或多个   ViewResolver视图解析器，找到ModelAndView<br>
+指定的视图。<br>
+（6）视图负责将结果显示到客户端。<br>
+<img src="https://i.loli.net/2021/06/02/FuJ6k54Dfi8NSph.png" alt="quicker_667ebf2c-7e1d-4561-8248-47eeba7ca2cd.png"></p>
+</li>
+<li>
+<p>使用基于注解的控制器，具有如下两个优点</p>
+<ul>
+<li>在基于注解的控制器类中，可以编写多个处理方法，进而可以处理多个请求（动作）。这就允许将相关的操作编写在同一个控制器类中，从而减少控制器类的数量，方便以后的维护。</li>
+<li>基于注解的控制器不需要在配置文件中部署映射，仅需要使用RequestMapping注释类型注解一个方法进行请求处理。</li>
+</ul>
+</li>
+<li>
+<p>Controller接受请求参数的常见方式</p>
+<ul>
+<li>通过实体bean接收请求参数 bean的属性名称必须与请求参数名称相同</li>
+<li>通过处理方法的形参接收请求参数 直接把表单参数写在控制器类相应方法的形参中，即形参名称与请求参数名称完全相同。</li>
+<li>通过HttpServletRequest接收请求参数</li>
+<li>通过@PathVariable接收URL中的请求参数</li>
+<li>通过@RequestParam接收请求参数</li>
+<li>通过@ModelAttribute接收请求参数 用于将多个请求参数封装到一个实体对象，从而简化数据绑定流程，而且自动暴露为模型数据用于视图页面展示时使用。</li>
+</ul>
+</li>
+<li>
+<p>简述单个和多个拦截器执行流程<br>
+首先将执行拦截器类中的preHandle()方法，如果该方法返回true，程序将继续执行控制器中处理请求的方法，否<br>
+则中断执行。如果preHandle()方法返回true，并且控制器中处理请求的方法执行后返回视图前，将执行postHandle()方法，然后会通过DispatcherServlet向客户端返回响应。<br>
+在DispatcherServlet处理完请求后，返回视图后，才执行afterCompletion()方法<br>
+多个拦截器同时工作，这时它们的preHandle()方法将按照配置文件中拦截器的配置顺序执行，而它们的postHandle()方法和afterCompletion()方法则按照配置顺序的反序执行。</p>
+</li>
+</ol>
+<h2 id="程序填空3道">程序填空3道</h2>
+<h3 id="依赖注入">依赖注入</h3>
+<pre><code><figure class="highlight"><figcaption><span>xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//构造方法，用于实现依赖注入</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">TestDIServiceImpl</span><span class="params">(TestDIDao testDIDao)</span> </span>&#123;</span><br><span class="line"><span class="keyword">super</span>();</span><br><span class="line"><span class="keyword">this</span>.testDIDao = testDIDao;</span><br><span class="line">&#125;</span><br><span class="line">&lt;!-- 将指定类TestDIDaoImpl配置给Spring，让Spring创建其实例 --&gt;</span><br><span class="line">&lt;bean id=<span class="string">&quot;myTestDIDao&quot;</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;dao.TestDIDaoImpl&quot;</span> /&gt;</span><br><span class="line">&lt;!-- 使用构造方法注入 --&gt;</span><br><span class="line">&lt;bean id=<span class="string">&quot;testDIService&quot;</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;service.TestDIServiceImpl&quot;</span>&gt;</span><br><span class="line">&lt;!-- 将myTestDIDao注入到TestDIServiceImpl类的属性 testDIDao上 --&gt;</span><br><span class="line">&lt;constructor-arg index=<span class="string">&quot;0&quot;</span> ref=<span class="string">&quot;myTestDIDao&quot;</span> /&gt;</span><br><span class="line">&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+setter方法注入 指 IoC 容器使用 setter 方法注入被依赖的实例。通过调用无参构造器或无参 static 工厂方法实例化 bean 后，调用该 bean 的 setter 方法，即可实现基于 setter 的 DI。
+
+<figure class="highlight"><figcaption><span>xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//添加testDIDao属性的setter方法，用于实现依赖注入</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTestDIDao</span><span class="params">(TestDIDao testDIDao)</span> </span>&#123;</span><br><span class="line"><span class="keyword">this</span>.testDIDao = testDIDao;</span><br><span class="line">&#125;</span><br><span class="line">&lt;!-- 将指定类TestDIDaoImpl配置给Spring，让Spring创建其实例 --&gt;</span><br><span class="line">&lt;bean id=<span class="string">&quot;myTestDIDao&quot;</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;dao.TestDIDaoImpl&quot;</span> /&gt;</span><br><span class="line">&lt;!-- 使用setter方法注入 --&gt;</span><br><span class="line">&lt;bean id=<span class="string">&quot;testDIService1&quot;</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;service.TestDIServiceImpl1&quot;</span>&gt;</span><br><span class="line">&lt;!-- 调用TestDIServiceImpl1类的setter方法，将myTestDIDao注入到 TestDIServiceImpl1类的属性testDIDao上--&gt;</span><br><span class="line">&lt;property name=<span class="string">&quot;testDIDao&quot;</span> ref=<span class="string">&quot;myTestDIDao&quot;</span> /&gt;</span><br><span class="line">&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+</code></pre>
+<h3 id="使用setter方法注入">使用setter方法注入</h3>
+<pre><code>方式装配(提供默认无参数的构造方法，并为注入的属性提供setter方法 )
+如public ComplexUser() &#123;
+super();
+&#125;
+public void setUname(String uname) &#123;
+this.uname = uname;
+&#125;
+在 配置文件中
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span> =<span class="string">&quot;user2实例名&quot;</span> <span class="attr">class</span>=<span class="string">&quot;assemble.ComplexUser&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;uname&quot;</span> <span class="attr">value</span>=<span class="string">&quot;chenheng2&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;residenceMap&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">map</span>&gt;</span> map要调用键值对 entry</span><br><span class="line">        <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;shenzhen&quot;</span> <span class="attr">value</span>=<span class="string">&quot;深圳/&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;asds&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">list</span>&gt;</span> set 和 array一样的用法</span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>看书<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+<p>配置注解</p>
+   <!-- 使用context命名空间，通过Spring扫描指定包下所有Bean的实现类，进行注解解析 -->
+<p>&lt;context:component-scan base-package=“annotation.*”/&gt;</p>
+<h3 id="框架整合示例">框架整合示例</h3>
+<pre><code>- 创建应用并导入相关JAR包
+- 创建持久化类 com.po.MyUser
+- 创建SQL映射文件和MyBatis核心配置文件 在该包中创建MyBatis核心配置文件mybatis-config.xml和SQL映射文件UserMapper.xml。
+- 创建数据访问接口 创建一个名为com.dao的包，在该包中创建UserDao接口，**并将接口使用@Mapper注解**为Mapper，接口中的方法与SQL映射文件一致
+- 创建日志文件
+- 创建控制层
+- 创建Spring的配置文件
+- 创建测试类
+
+UserMapper.xml 当方法没有参数时 则不写parameterType属性
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;接口名称如com.dao.UserDao&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;接口中的方法名&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;持久化类名如com.po.MyUser&quot;</span>&gt;</span></span><br><span class="line">    select * from user where uid = #&#123;uid&#125;//#&#123;&#125;表示占位符 相当于？ #&#123;uid&#125; 表示该占位符接受参数的名称为uid</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;addUser&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.po.MyUser&quot;</span>&gt;</span></span><br><span class="line">    insert into user (uname,usex) values(#&#123;uname&#125;,#&#123;usex&#125;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">&quot;updateUser&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.po.User&quot;</span>&gt;</span></span><br><span class="line">    update user set uname=#&#123;uname&#125;,usex=#&#123;usex&#125; where uid=#&#123;uid&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br></pre></td></tr></table></figure>
+select 返回结果集 insert update delete 返回整数 影响了数据库的记录行数。
+</code></pre>
+<h3 id="映射器">映射器</h3>
+<p>使用Map接口传递多个参数<br>
+假设数据操作接口中有个实现查询陈姓男性用户信息功能的方法：public List&lt;MyUser&gt; selectAllUser(Map&lt;String, Object&gt; param);</p>
+<pre><code><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">&lt;!-- 查询陈姓男性用户信息 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectAllUser&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.po.MyUser&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;map&quot;</span>&gt;</span></span><br><span class="line">select * from user where uname like concat(&#x27;%&#x27;,#&#123;u_name&#125;,&#x27;%&#x27;)and usex = #&#123;u_sex&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+<p>com.comtroller 中UserController代码如下</p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;string, Object&gt; map=<span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">map.put(<span class="string">&quot;u_name&quot;</span>, <span class="string">&quot;陈&quot;</span>);</span><br><span class="line">map.put(<span class="string">&quot;u_sex&quot;</span>,<span class="string">&quot;男&quot;</span>);</span><br><span class="line">List&lt;Myuser&gt; list=userDao.selectAllUser(map);</span><br><span class="line"><span class="keyword">for</span>(MyUser myUser : list)</span><br><span class="line">&#123;</span><br><span class="line">        System.out.println(myUser);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre>
+<p>参数名u_name和u_sex是Map的key。</p>
+<p>使用Java Bean传递多个参数<br>
+首先，创建一个名为com.pojo的包，在包中创建一个POJO类SeletUserParam<br>
+其次，将Dao接口中的selectAllUser方法修改为：public List&lt;MyUser&gt; selectAllUser(SeletUserParam param);<br>
+此时SQL映射文件中parameterType=“com.pojo.SeletUserParam”<br>
+最后，将com.controller包中UserController的“查询多个用户”代码片段修改。</p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SeletUserParam su = <span class="keyword">new</span> SeletUserParam();</span><br><span class="line">su.setU_name(<span class="string">&quot;王&quot;</span>);</span><br><span class="line">su.setU_sex(<span class="string">&quot;男&quot;</span>);</span><br><span class="line">List&lt;MyUser&gt; list = userDao.selectAllUser(su);</span><br></pre></td></tr></table></figure>
+可以定义SQL语句的一部分重复引用 \&lt;include refid=&quot;&quot;/&gt; 引用
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">sql</span> <span class="attr">id</span>=<span class="string">&quot;comColumns&quot;</span>&gt;</span></span><br><span class="line">uid,uname,usex</span><br><span class="line"><span class="tag">&lt;/<span class="name">sql</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectUser&quot;</span> <span class="attr">resultType</span>=</span></span><br><span class="line"><span class="tag">&quot;<span class="attr">com.po.MyUser</span>&quot;&gt;</span></span><br><span class="line">select <span class="tag">&lt;<span class="name">include</span> <span class="attr">refid</span>=<span class="string">&quot;comColumns&quot;</span>/&gt;</span> from user</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+<p>&lt;resultMap&gt;元素 主要用来定义映射规则、<strong>级联</strong>的更新以及定义类型转化器等。<br>
+&lt;resultMap&gt;元素的type属性表示需要的<br>
+POJO，id属性是resultMap的唯一标识。<br>
+子元素&lt;constructor&gt;用于配置构造方法<br>
+(当POJO未定义无参数的构造方法时使<br>
+用)。子元素&lt;id&gt;用于表示哪个列是主键。<br>
+子元素&lt;result&gt;用于表示POJO和数据表<br>
+普通列的映射关系。子元素&lt;association&gt; 、&lt;collection&gt; 和&lt;discriminator&gt;是用在级联的情况下。</p>
+<pre><code><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;&quot;</span> <span class="attr">id</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">constructor</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 类在实例化时，用来注入结果到构造方法 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">idArg</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- ID参数，结果为ID --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">arg</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 注入到构造方法的一个普通结果 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">constructor</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">id</span>/&gt;</span> <span class="comment">&lt;!-- 用于表示哪个列是主键 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">result</span>/&gt;</span> <span class="comment">&lt;!-- 注入到字段或JavaBean属性的普通结果 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span>/&gt;</span> <span class="comment">&lt;!-- 用于一对一关联 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span>/&gt;</span><span class="comment">&lt;!--用于一对多、多对多关联--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">discriminator</span> <span class="attr">javaType</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 使用结果值来决定使用哪个结果映射 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">case</span> <span class="attr">value</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 基于某些值的结果映射 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">discriminator</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+返回结果可以使用Map存储，也可以使用POJO存储。
+Map存储
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 查询所有用户信息存到Map中 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectAllUserMap&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;map&quot;</span>&gt;</span></span><br><span class="line">select * from user</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+POJO存储结果集
+创建 POJO 类
+配置\&lt;resultMap&gt;元素
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 使用自定义结果集类型 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;com.pojo.MapUser&quot;</span> <span class="attr">id</span>=<span class="string">&quot;myResult&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- property是com.pojo.MapUser类中的属性--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- column是查询结果的列名，可以来自不同的表 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;m_uid&quot;</span> <span class="attr">column</span>=<span class="string">&quot;uid&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 用于表示哪个列是主键 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;m_uname&quot;</span> <span class="attr">column</span>=<span class="string">&quot;uname&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;m_usex&quot;</span> <span class="attr">column</span>=<span class="string">&quot;usex&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+配置\&lt;select&gt;元素
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 使用自定义结果集类型查询所有用户 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectResultMap&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;myResult&quot;</span>&gt;</span></span><br><span class="line">select * from user</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+添加接口方法
+public List\&lt;MapUser&gt; selectResultMap();
+</code></pre>
+<h3 id="级联查询">级联查询</h3>
+<p>一对一 idcard 和 person person引用了idcard的主键<br>
+在com.mybatis中创建两张表对应的映射文件IdCardMapper.xml和PersonMapper.xml。在PersonMapper.xml文件中以3种方式实现“根据id查询个人信息”的功能。</p>
+<pre><code><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 一对一 根据id查询个人信息：第一种方法（嵌套查询） --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- type引用POJO类 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;com.po.Person&quot;</span> <span class="attr">id</span>=<span class="string">&quot;cardAndPerson1&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;name&quot;</span> <span class="attr">column</span>=<span class="string">&quot;name&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;age&quot;</span> <span class="attr">column</span>=<span class="string">&quot;age&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 一对一关联查询 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- person表中外键为idcard_id在类中定义为card --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">&quot;card&quot;</span> <span class="attr">column</span>=<span class="string">&quot;idcard_id&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;com.po.Idcard&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">select</span>=<span class="string">&quot;com.dao.IdCardDao.selectCodeById&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- property 指定person里的对象属性column是数据表里对应的字段</span></span><br><span class="line"><span class="comment">    select指定引入嵌套查询的子SQL语句，该属性用于关联映射中的嵌套查询。 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectPersonById1&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;cardAndPerson1&quot;</span>&gt;</span></span><br><span class="line">select * from person where id=#&#123;id&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 一对一 根据id查询个人信息：第二种方法（嵌套结果） --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;com.po.Person&quot;</span> <span class="attr">id</span>=<span class="string">&quot;cardAndPerson2&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;name&quot;</span> <span class="attr">column</span>=<span class="string">&quot;name&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;age&quot;</span> <span class="attr">column</span>=<span class="string">&quot;age&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 一对一关联查询 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">&quot;card&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;com.po.Idcard&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;idcard_id&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;code&quot;</span> <span class="attr">column</span>=<span class="string">&quot;code&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">association</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectPersonById2&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;cardAndPerson2&quot;</span>&gt;</span></span><br><span class="line">select p.*,ic.code</span><br><span class="line">from person p, idcard ic</span><br><span class="line">where p.idcard_id = ic.id and p.id=#&#123;id&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 一对一 根据id查询个人信息：第三种方法（使用POJO存储结果） --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectPersonById3&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.pojo.SelectPersonById&quot;</span>&gt;</span></span><br><span class="line">select p.*,ic.code</span><br><span class="line">from person p, idcard ic</span><br><span class="line">where p.idcard_id = ic.id and p.id=#&#123;id&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</code></pre>
+<p>一对多 一个用户多个订单<br>
+多对多 中间表orders_detail不需要持久化类，但需要在订单表orders对应的持久化类Orders中添加关联属性。</p>
+<pre><code><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 一对多 根据uid查询用户及其关联的订单信息：第一种方法（嵌套查询） --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;com.po.MyUser&quot;</span> <span class="attr">id</span>=<span class="string">&quot;userAndOrders1&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;uid&quot;</span> <span class="attr">column</span>=<span class="string">&quot;uid&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 用于表示哪个列是主键 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;uname&quot;</span> <span class="attr">column</span>=<span class="string">&quot;uname&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;usex&quot;</span> <span class="attr">column</span>=<span class="string">&quot;usex&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 一对多关联查询，ofType表示集合中的元素类型，将uid传递给selectOrdersById--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;ordersList&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;com.po.Orders&quot;</span> <span class="attr">column</span>=<span class="string">&quot;uid&quot;</span> </span></span><br><span class="line"><span class="tag">    <span class="attr">select</span>=<span class="string">&quot;com.dao.OrdersDao.selectOrdersById&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectUserOrdersById1&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;userAndOrders1&quot;</span>&gt;</span></span><br><span class="line">select * from user where uid = #&#123;id&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 一对多关联查询，ofType表示集合中的元素类型 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;ordersList&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;com.po.Orders&quot;</span> &gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;ordersn&quot;</span> <span class="attr">column</span>=<span class="string">&quot;ordersn&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectUserOrdersById2&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;userAndOrders2&quot;</span>&gt;</span></span><br><span class="line">select u.*,o.id,o.ordersn from user u, orders o where u.uid = o.user_id and u.uid=#&#123;id&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 多对多关联 查询所有订单以及每个订单对应的商品信息（嵌套结果） --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;com.po.Orders&quot;</span> <span class="attr">id</span>=<span class="string">&quot;allOrdersAndProducts&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;ordersn&quot;</span> <span class="attr">column</span>=<span class="string">&quot;ordersn&quot;</span>/&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 多对多关联 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;products&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;com.po.Product&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;pid&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;name&quot;</span> <span class="attr">column</span>=<span class="string">&quot;name&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;price&quot;</span> <span class="attr">column</span>=<span class="string">&quot;price&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectallOrdersAndProducts&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;allOrdersAndProducts&quot;</span>&gt;</span></span><br><span class="line">select o.*,p.id as pid,p.name,p.price</span><br><span class="line">from orders o,orders_detail od,product p</span><br><span class="line">where od.orders_id = o.id </span><br><span class="line">and od.product_id = p.id</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+<h3 id="动态sql">动态SQL</h3>
+   <!-- 使用if元素，根据条件动态查询用户信息 -->
+<pre><code><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectUserByIf&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.po.MyUser&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.po.MyUser&quot;</span>&gt;</span></span><br><span class="line">    select * from user where 1=1</span><br><span class="line"><span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;uname !=null and uname!=&#x27;&#x27;&quot;</span>&gt;</span></span><br><span class="line">    and uname like concat(&#x27;%&#x27;,#&#123;uname&#125;,&#x27;%&#x27;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;usex !=null and usex!=&#x27;&#x27;&quot;</span>&gt;</span></span><br><span class="line">    and usex = #&#123;usex&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 使用choose、when、otherwise元素，根据条件动态查询用户信息 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectUserByChoose&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.po.MyUser&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.po.MyUser&quot;</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">    select * from user where 1=1</span><br><span class="line">    <span class="tag">&lt;<span class="name">choose</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">when</span> <span class="attr">test</span>=<span class="string">&quot;uname !=null and uname!=&#x27;&#x27;&quot;</span>&gt;</span></span><br><span class="line">            and uname like concat(&#x27;%&#x27;,#&#123;uname&#125;,&#x27;%&#x27;)</span><br><span class="line">        <span class="tag">&lt;/<span class="name">when</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">when</span> <span class="attr">test</span>=<span class="string">&quot;usex !=null and usex!=&#x27;&#x27;&quot;</span>&gt;</span></span><br><span class="line">            and usex = #&#123;usex&#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">when</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">otherwise</span>&gt;</span></span><br><span class="line">            and uid &gt; 10</span><br><span class="line">        <span class="tag">&lt;/<span class="name">otherwise</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">choose</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">foreach</span>&gt;</span>元素主要用在构建in条件中，它可以在SQL语句中进行迭代一个集合</span><br><span class="line">foreach元素的属性主要有item，index，collection，open，separator，close。</span><br><span class="line">item表示集合中每一个元素进行迭代时的别名，</span><br><span class="line">index指定一个名字，用于表示在迭代过程中，每次迭代到的位置，</span><br><span class="line">open表示该语句以什么开始，</span><br><span class="line">separator表示在每次进行迭代之间以什么符号作为分隔符，close表示以什么结束。</span><br><span class="line">如果传入的是单参数且参数类型是一个List的时候，collection属性值为list。</span><br><span class="line">如果传入的是单参数且参数类型是一个array数组的时候，collection的属性值为array。</span><br><span class="line">如果传入的参数是多个时，需要把它们封装成一个Map，当然单参数也可以封装成Map</span><br><span class="line"></span><br><span class="line">使用bind元素进行模糊查询</span><br></pre></td></tr></table></figure>
+</code></pre>
+<h3 id="视图解析器">视图解析器</h3>
+<pre><code>用户可以在配置文件中定义SpringMVC的一个视图解析器（ViewResolver），配置前缀和后缀两个属性，RegisterController和LoginController控制器类的视图路径仅需提供register和login，视图解析器将会自动添加前缀和后缀
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 前缀 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;prefix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;/WEB-INF/jsp/&quot;</span> /&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 后缀 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;suffix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;.jsp&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+<h3 id="controller获取请求参数">Controller获取请求参数</h3>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">/*通过HttpServletRequest接收请求参数  */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">register</span><span class="params">(HttpServletRequest request, Model model)</span> </span>&#123;String uname = request.getParameter(<span class="string">&quot;uname&quot;</span>);/</span><br><span class="line">  <span class="comment">/*通过@PathVariable获取URL中的参数 必须加method属性*/</span></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;/register/&#123;uname&#125;/&#123;upass&#125;&quot;, method=RequestMethod.GET)</span></span><br><span class="line"> </span><br><span class="line"> <span class="function"><span class="keyword">public</span> String <span class="title">register</span><span class="params">(<span class="meta">@PathVariable</span> String uname,<span class="meta">@PathVariable</span> String upass,Model model)</span> </span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"> <span class="comment">/* 通过@RequestParam接收请求参数 */</span></span></span><br><span class="line"><span class="function"> <span class="title">register</span><span class="params">(<span class="meta">@RequestParam</span> String uname, <span class="meta">@RequestParam</span> String upass,</span></span></span><br><span class="line"><span class="function"><span class="params"> <span class="comment">/* 当请求参数与接收参数名不一致时，“通过处理方法的形参接收请求参数”不会报404错误，而“通过@RequestParam接收请求参数”会404错误。 */</span></span></span></span><br></pre></td></tr></table></figure>
+</code></pre>
+<h3 id="modelattribute">@ModelAttribute</h3>
+<pre><code>- 绑定请求参数到实体对象（表单的命令对象）
+    在上述代码中“@ModelAttribute（&quot;user&quot;）UserFormuser”语句的功能有两个：
+    一是将请求参数的输入封装到user对象中；
+    二是创建UserForm实例，以“user”为键值存储在Model对象中，和“model.addAttribute（&quot;user&quot;，
+    user）”语句的功能一样。如果没有指定键值，即“@ModelAttributeUserFormuser”，那么在创建
+    UserForm 实 例 时 以 “ userForm” 为 键 值 存 储 在 Model 对象中 ， 和 “ model.addAttribute
+    （&quot;userForm&quot;,user）”语句的功能一样。
+    @RequestMapping(&quot;/register&quot;)
+    public String register(@ModelAttribute(&quot;user&quot;) UserForm user)
+- 注解一个非请求处理方法
+    被@ModelAttribute注解的方法将在每次调用该控制器类的请求处理方法前被调用。这种特性可以用来控制登录权限
+
+    <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseController</span></span>&#123;</span><br><span class="line"><span class="meta">@ModelAttribute</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">isLogin</span><span class="params">(HttpSession session)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"><span class="keyword">if</span>(session.getAttribute(<span class="string">&quot;user&quot;</span>)==<span class="keyword">null</span>)&#123;</span><br><span class="line"><span class="function"><span class="keyword">throws</span> new <span class="title">Exception</span><span class="params">(<span class="string">&quot;没有权限！&quot;</span>)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    在上述ModelAttributeController类中的add、update、delete请求处理方法执行时，首先执行父类BaseController中的isLogin方法判断登录权限。
+</code></pre>
+<h3 id="表单标签库">表单标签库</h3>
+<pre><code>&lt;!-- modelAttribute：暴露form backing object的模型属性名称，默认为command，属性值绑定一个JavaBean对象 --&gt;
+&lt;form:form modelAttribute=&quot;xxx&quot; method=&quot;post&quot; action=&quot;xxx&quot;&gt;
+……
+&lt;/form:form&gt;
+&lt;form:input path=&quot;xxx&quot;/&gt;
+path属性将文本框输入值绑定到form backing object的一个属性
+select标签的选项可能来自其属性items指定的集合，或者来自一个嵌套的option标签或options标签
+&lt;form:select path=&quot;xxx&quot;&gt;
+    &lt;form:options items=&quot;xxx&quot;/&gt;
+&lt;/form:select&gt;
+</code></pre>
+<h3 id="拦截器的配置">拦截器的配置</h3>
+<pre><code><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置拦截器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:interceptors</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置一个全局拦截器，拦截所有请求 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;interceptor.TestInterceptor&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置拦截器作用的路径 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">&quot;/**&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- /** 拦截所有路径 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置不需要拦截作用的路径 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:exclude-mapping</span> <span class="attr">path</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 定义在&lt;mvc:interceptor&gt;元素中，表示匹配指定路径的请求才进行拦截 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;interceptor.Interceptor1&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置拦截器作用的路径 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">&quot;/gotoTest&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 定义在&lt;mvc:interceptor&gt;元素中，表示匹配指定路径的请求才进行拦截即拦截所有以gotoTest结尾的路径 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;interceptor.Interceptor2&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptors</span>&gt;</span></span><br><span class="line">注意：<span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span>中的子元素必须按照上述代码中的配置顺序边写，即<span class="tag">&lt;<span class="name">mvc:mapping</span>&gt;</span>&lt;mvc:excludemapping&gt;<span class="tag">&lt;<span class="name">bean</span>&gt;</span>,否则文件会报错</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginInterceptor</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span></span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandl</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span></span></span><br><span class="line"><span class="function"><span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"><span class="comment">//获取请求的URL</span></span><br><span class="line">String url = request.getRequestURI();</span><br><span class="line"><span class="comment">//login.jsp或登录请求放行，不拦截</span></span><br><span class="line"><span class="keyword">if</span>(url.indexOf(<span class="string">&quot;/toLogin&quot;</span>) &gt;= <span class="number">0</span> || url.indexOf(<span class="string">&quot;/login&quot;</span>) &gt;= <span class="number">0</span>) &#123;</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//获取Session</span></span><br><span class="line">HttpSession session = request.getSession();</span><br><span class="line">Object obj = session.getAttribute(<span class="string">&quot;user&quot;</span>);</span><br><span class="line"><span class="keyword">if</span>(obj != <span class="keyword">null</span>)</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line"><span class="comment">//没有登录且不是登录页面，转发到登录页面，并给出提示错误信息</span></span><br><span class="line">request.setAttribute(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;还没登录，请先登录！&quot;</span>);</span><br><span class="line">request.getRequestDispatcher(<span class="string">&quot;/WEB-INF/jsp/login.jsp&quot;</span>).forward(request, response);</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre>
+<h3 id="el与jstl">EL与JSTL</h3>
+<h4 id="el">EL</h4>
+<p>${user.age}==<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mi>s</mi><mi>e</mi><mi>r</mi><mo stretchy="false">[</mo><mi mathvariant="normal">&quot;</mi><mi>a</mi><mi>g</mi><mi>e</mi><mi mathvariant="normal">&quot;</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">{user[&quot;age&quot;]}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">u</span><span class="mord mathdefault">s</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mopen">[</span><span class="mord">&quot;</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault">e</span><span class="mord">&quot;</span><span class="mclose">]</span></span></span></span></span>{array[0]}<br>
+${empty A} 如果A为null返回true</p>
+<p>与作用范围相关隐含对象 pageScope requestScope sessionScope applicationScope<br>
+获取数据： ${EL隐含对象.关键字对象.属性}或${EL隐含对象.关键字对象}</p>
+<p>与请求参数相关隐含对象param以及paramValues<br>
+获取数据： ${EL隐含对象.参数名}</p>
+<h4 id="jstl">JSTL</h4>
+<p>使用taglib标记定义前缀与引用</p>
+<p>&lt;c:out value=&quot;&quot;&gt; 显示数据<br>
+&lt;c:set value=&quot;&quot; &gt; 设置作用域变量 设置JavaBean属性<br>
+&lt;c:remove&gt;</p>
+<p>函数标签库</p>
+<p>${fn:indexof(string,substring)} 返回子字符串在某个字符串第一次出现时的索引</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.fengjiansu.github.io/zh/java/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%A4%A7%E4%B8%89/" rel="tag">大三</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%80%83%E8%AF%95/" rel="tag">考试</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/zh/protocol-analysis/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            网络协议考试
+          
+        </div>
+      </a>
+    
+    
+      <a href="/zh/microcomputer-exam/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">微机考试</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2022
+        <i class="ri-heart-fill heart_icon"></i> 风间宿
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="风间宿的博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2019/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+ 
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script>
+        
+    
+ 
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+  </div>
+</body>
+
+</html>

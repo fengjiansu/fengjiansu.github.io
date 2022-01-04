@@ -1,0 +1,1459 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title></title>
+    <url>/zh/undefined/</url>
+    <content><![CDATA[<h1>DO使用</h1>
+<h2 id="购买服务器">购买服务器</h2>
+<p>因为centos8停止更新的缘故，选了debian11，服务器选旧金山（圣弗朗西斯科）区域只能选3不知道为什么，密码时直接选择ssh，windows可以用puttygen生成公钥[<a href="https://docs.digitalocean.com/products/droplets/how-to/connect-with-ssh/putty/">https://docs.digitalocean.com/products/droplets/how-to/connect-with-ssh/putty/</a>]<br>
+设置后就可以远程登陆了注意登录用户名是root</p>
+<h2 id="设置debian11服务器">设置debian11服务器</h2>
+<p>美化命令行<br>
+进入vim</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>按下shift+g跳到最后一行，按下o在最后新建一行进行编辑，输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">PS1=<span class="string">&quot;\[\e[01;32m\]\h \[\e[01;35m\]\A \[\e[01;34m\](\w) \[\e[01;36m\]\\$ \[\e[0m\]&quot;</span></span><br></pre></td></tr></table></figure>
+<p>按下Esc退出编辑模式，输入:wq保存并退出，然后重新加载更改后的配置文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>禁止ping</p>
+<h2 id="打开bbr">打开bbr</h2>
+<p>bbr需要系统内核4.9.0以上<br>
+查看内核版本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">uname -r</span><br></pre></td></tr></table></figure>
+<p>打开BBR</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;net.core.default_qdisc=fq&#x27;</span> | sudo tee -a /etc/sysctl.conf</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;net.ipv4.tcp_congestion_control=bbr&#x27;</span> | sudo tee -a /etc/sysctl.conf</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sysctl -p</span><br></pre></td></tr></table></figure>
+<p>查看内核模块是否已经加载</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">lsmod | grep bbr</span><br></pre></td></tr></table></figure>
+<h2 id="更改时区">更改时区</h2>
+<p>国外服务器默认使用UTC时间<br>
+利用timedatectl程序可以更改<br>
+将硬件时钟调整为与本地时钟一致, 0 为设置为 UTC 时间</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">timedatectl set-local-rtc 1</span><br></pre></td></tr></table></figure>
+<p>设置系统时区为上海</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">timedatectl set-timezone Asia/Shanghai</span><br></pre></td></tr></table></figure>
+<h2 id="ssh登录服务器">ssh登录服务器</h2>
+<p>在购买时已经在服务器上保存了公钥<br>
+自己手动配置步骤如下<br>
+生成之后需要把公钥上传到服务器</p>
+<ol>
+<li>
+<p>保存为服务器端的 ~/.ssh/authorized_keys 文件(公钥 id_rsa 需重命名为 authorized_keys和 /etc/ssh/sshd_config 中的配置保持一致)</p>
+</li>
+<li>
+<p>确保只有当前用户可读写同时更改authorized_keys文件和.ssh文件夹的权限，分别是600和700权限</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">chown fengjiansu:fengjiansu ~/.ssh/</span><br><span class="line">chmod 700 /root/.ssh</span><br><span class="line">chmod 600 /root/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>修改ssh的配置文件，以便ssh使用密钥</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 打开ssh配置文件</span></span><br><span class="line"></span><br><span class="line">vim /etc/ssh/sshd_config</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将以下这项去掉注释并改为yes，以启用密钥验证</span></span><br><span class="line"></span><br><span class="line">PubkeyAuthentication yes</span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定公钥数据库文件</span></span><br><span class="line"></span><br><span class="line">AuthorsizedKeysFile .ssh/authorized_keys</span><br><span class="line"></span><br><span class="line"><span class="comment"># 为了减少被扫描端口的次数，把端口从22改为其他端口，如2333</span></span><br><span class="line"></span><br><span class="line">Port 2333</span><br><span class="line"></span><br><span class="line"><span class="comment"># 需要使用root用户登录，要确保这一行为yes</span></span><br><span class="line"></span><br><span class="line">PermitRootLogin yes</span><br><span class="line"></span><br><span class="line"><span class="comment"># StrictModes修改为no,默认为yes</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果不修改用key登陆是出现server refused our key</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果StrictModes为yes必需保证存放公钥的文件夹的拥有与登陆用户名是相同的</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># “StrictModes”设置ssh在接收登录请求之前是否检查用户家目录和rhosts文件的权限和所有权</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 很有有必要这样做，因为新手经常会把自己的目录和文件设成任何人都有写权限</span></span><br><span class="line"></span><br><span class="line">StrictModes no</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>启一下ssh以便修改的配置生效</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#ubuntu系统</span></span><br><span class="line">service ssh restart</span><br><span class="line"></span><br><span class="line"><span class="comment">#debian系统</span></span><br><span class="line">/etc/init.d/ssh restart</span><br><span class="line"></span><br><span class="line"><span class="comment"># CentOS 使用以下命令</span></span><br><span class="line">systemctl restart sshd.service</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="dash切换为bash">dash切换为bash</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ls -l /bin/sh</span><br></pre></td></tr></table></figure>
+<p>可以查到当前系统shell使用的版本</p>
+<p>执行以下命令，并选择No，可以将默认的shell切换回bash</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo dpkg-reconfigure dash</span><br></pre></td></tr></table></figure>
+<h2 id="新建用户">新建用户</h2>
+<p>以下以用户名fengjiansu为例进行设置</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 新建用户fengjiansu，同时添加家目录/home/fengjiansu</span></span><br><span class="line">useradd -d /home/fengjiansu/ -m fengjiansu(adduser fengjiansu)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置用户密码</span></span><br><span class="line">passwd fengjiansu</span><br><span class="line"></span><br><span class="line"><span class="comment"># 切换用户</span></span><br><span class="line">su fengjiansu</span><br><span class="line"></span><br><span class="line"><span class="comment">#给用户sudo权限</span></span><br><span class="line">usermod -aG sudo fengjiansu</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除用户和相应目录</span></span><br><span class="line">deluser --remove-home fengjiansu</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>创建用户有两个命令：useradd 和 adduser ，useradd 只是添加用户，但是这样的用户没有/home家目录，也没有提示设置密码，而 adduser 则家目录和密码都有、<br>
+此时打开PUTTY点击Connection的Data改变用户名以普通用户的身份登录要用此用户登录服务器还需要复制公钥文件到 fengjiansu 用户目录下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 复制公钥所在文件夹 /root/.ssh 到 fengjiansu 用户目录下</span></span><br><span class="line">cp -r /root/.ssh /home/fengjiansu</span><br><span class="line"></span><br><span class="line"><span class="comment"># 因为是用 root 用户复制的文件，所以还需要将 fengjiansu 用户目录下的 .ssh 文件夹和其中的文件所有者设置为 fengjiansu(这个命令需要将目录切换到fengjiansu目录下)</span></span><br><span class="line"> <span class="built_in">cd</span> /home/fengjiansu</span><br><span class="line">chown -R fengjiansu:fengjiansu .ssh</span><br></pre></td></tr></table></figure>
+<p>此时可以尝试用 fengjiansu 用户登录，如果能登录成功，那么就在服务器禁用root用户登录可以通过Xshell的Xftp更改内容更方便</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 编辑ssh配置文件</span></span><br><span class="line">sudo vim /etc/ssh/sshd_config</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将允许root用户登录一行中的yes改为no</span></span><br><span class="line">PermitRootLogin no</span><br></pre></td></tr></table></figure>
+<p>改完记得重启sshd</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">systemctl restart sshd</span><br></pre></td></tr></table></figure>
+<h2 id="密钥转换">密钥转换</h2>
+<p>windows用Xshell时所需密钥为openssh格式可借助puttygen工具<br>
+打开后点load打开ppk文件<br>
+之后点击Conversions点击Export OpenSSH keys得到debian11-id_rsa.pub公钥</p>
+<h2 id="xshell使用">Xshell使用</h2>
+<h3 id="删除显示乱码">删除显示乱码</h3>
+<p>文件→属性→终端→键盘，把 delete 和 backspace 序列改为 ASCII 127即可</p>
+<h3 id="上下左右键乱码">上下左右键乱码</h3>
+<p>命令提示符并没有显示登录用户名和主机名，没有当前路径名，什么都没有<br>
+通过/etc/passwd文件可以看出来，原因是新建的用户fengjiansu使用了不同的shell<br>
+这可能不是xshell的问题，而是服务器的设置问题</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">fengjiansu:x:1000:1000:/home/fengjiansu:/bin/sh</span><br></pre></td></tr></table></figure>
+<p>修改/etc/passwd文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">fengjiansu:x:1000:1000:/home/fengjiansu:/bin/bash</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+  <entry>
+    <title>微机上机教程</title>
+    <url>/zh/micro-computer/</url>
+    <content><![CDATA[<p>上机</p>
+<a id="more"></a>
+<p>Dfh 不对 0dfh 可以<br>
+宏汇编定义在inc文件中</p>
+<h3 id="子程序和lib库">子程序和lib库</h3>
+<p>子程序名即过程名</p>
+<ul>
+<li>
+<p>主程序中</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.data前要 extern 子程序名:near</span><br><span class="line">调用时 call 子程序名</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>且子程序要写在主程序 invoke ExitProcess,0之后<br>
+main ENDP 之前此时子程序只以子程序名 ENDP结尾</p>
+<ul>
+<li>
+<p>子程序中</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.data前 public 子程序名</span><br><span class="line">.code后</span><br><span class="line">子程序名 PROC c</span><br><span class="line">ret</span><br><span class="line">子程序名 ENDP</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>创建lib库</p>
+<ul>
+<li>创建新项目 静态库</li>
+<li>生成自定义文件masm</li>
+<li>在源文件中添加子程序文件生成解决方案</li>
+<li>找到生成的lib文件复制到要调用库文件的函数中去</li>
+</ul>
+<p>编译cpp时出错 项目属性 链接器高级入口点处的值删除(之前设为main)</p>
+<h3 id="程序模块">程序模块</h3>
+<h4 id="子程序模块">子程序模块</h4>
+<p>子程序单独编写，汇编形成目标模块OBJ文件<br>
+连接时输入子程序模块文件名<br>
+用共用伪指令PUBLIC和外部伪指令EXTERN声明<br>
+PUBLIC 标识符 [,标识符 …]<br>
+;定义标识符的模块使用<br>
+EXTERN 标识符:类型 [,标识符:类型 …]<br>
+;调用标识符的模块使用</p>
+<h4 id="子程序库">子程序库</h4>
+<p>统一管理子程序模块<br>
+使用子程序库：在连接主程序模块时提供子程序库文件名<br>
+子程序文件编写完成、汇编形成目标模块<br>
+VS201X环境中编译生成.obj文件<br>
+利用库管理工具程序LIB.EXE：把子程序模块逐个加入到子程序库（.LIB）</p>
+<h4 id="库文件包含">库文件包含</h4>
+<p>直接在主程序源文件中用库文件包含伪指令INCLUDELIB说明<br>
+不用在连接时输入库文件名</p>
+<h4 id="宏汇编">宏汇编</h4>
+<p>宏（Macro）：具有宏名的一段汇编语句序列<br>
+宏需要先定义<br>
+宏名	MACRO 形参表<br>
+……	;宏定义体<br>
+ENDM<br>
+然后程序中进行宏调用<br>
+宏名 实体参数<br>
+在汇编时，宏指令被汇编程序用宏定义的代码序列替代，实现宏展开</p>
+<h4 id="源文件包含">源文件包含</h4>
+<p>将INCLUDE伪指令指定的文本文件内容插入源程序<br>
+可以包含任何文本文件<br>
+一些常用的或有价值的宏定义存放在.MAC宏定义文件<br>
+各种常量定义、声明语句等组织在.INC包含文件<br>
+常用的子程序形成.ASM汇编语言源文件<br>
+利用INCLUDE伪指令包含其他文件，其实质仍然是一个源程序，只不过是分在了几个文件书写</p>
+<h3 id="模块连接">模块连接</h3>
+<p>各种语言的程序分别编写<br>
+利用各自的开发环境编译形成OBJ模块文件<br>
+将它们连接在一起，生成可执行文件<br>
+为了保证正确连接<br>
+采用一致的调用规范 如c<br>
+声明共用函数和变量<br>
+正确传递入口参数和返回参数<br>
+使用MASM的扩展过程定义</p>
+<p>cpp 里 extern “C” { long mean(long d[], long num); }</p>
+<p>asm文件<br>
+mean	proto d:ptr dword,num:dword ; 过程声明</p>
+<p>mean	proc USES ebx ecx edx,d:ptr dword,num:dword ; 过程定义</p>
+<p>点击编译生成obj文件 在工程目录下的debug文件夹下找到文件<br>
+放在和cpp文件同级目录下<br>
+注意两个文件命名不能相同否则obj文件会混合在一起编译失败</p>
+<h3 id="调用api函数">调用API函数</h3>
+<p>MessageBoxA PROTO :DWORD,:DWORD,:DWORD,:DWORD<br>
+MessageBox equ <MessageBoxA><br>
+NULL	equ 0<br>
+MB_YESNOCANCEL	equ 3<br>
+MB_OK equ 0<br>
+MB_ICONWARNING equ 48<br>
+参数相加 例如 欧取消为3 感叹号是48则 48+3=51为感叹号加取消按钮</p>
+]]></content>
+      <tags>
+        <tag>大三</tag>
+        <tag>上机教程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>操作系统考试</title>
+    <url>/zh/os/</url>
+    <content><![CDATA[<h2 id="名词解释">名词解释</h2>
+<ol>
+<li>
+<p>逻辑和物理地址<br>
+逻辑地址：给程序中的代码和数据从0开始编的地址。<br>
+物理地址：给物理内存的各个字节从0开始编的地址。</p>
+</li>
+<li>
+<p>静态和动态地址重定位<br>
+静态地址重定位：将程序加载到内存之后，将所有指令中提及的地址进行修改，给其加上一个偏移，即程序在内存中的起始位置。<br>
+动态地址重定位：将程序加载到内存之后，并不对内存中的程序进行修改，而是在执行每一条指令的时候，如果这条指令提及一个地址，则将该地址加上程序在内存中的起始位置，然后用得到位置访问内存。</p>
+</li>
+<li>
+<p>外碎片和内碎片<br>
+外碎片：系统中尚有空闲内存，但这些空闲的部分不连续，导致无法分配给作业使用，这就是外碎片。<br>
+内碎片：已经分配给作业一片内存，但作业并未将其全部使用，这部分没有使用的部分就是内碎片。</p>
+</li>
+<li>
+<p>当前目录<br>
+每个进程都有一个当前目录，当该进程以相对路径访问文件时，系统会将当前目录跟相对路径拼接在一起形成绝对路径。</p>
+</li>
+<li>
+<p>文件系统<br>
+用于控制存储数据和获取数据，通过允许数据轻松地存储、定位和获取，使得能够高效且方便地访问存储设备。</p>
+</li>
+<li>
+<p>目录文件<br>
+目录项等信息需要保存，用于保存它们的文件就是目录文件。</p>
+</li>
+<li>
+<p>虚拟设备<br>
+通过缓冲等技术，将独占设备改造为可供多个进程共享。</p>
+</li>
+<li>
+<p>通道<br>
+即I/O处理器，类似DMA控制器，但可以执行程序。</p>
+</li>
+</ol>
+<h2 id="简答">简答</h2>
+<ol>
+<li>
+<p>文件的物理结构有哪几种？为什么说链接文件结构不适用于随机存取<br>
+连续、链接、索引。<br>
+链接结构，要访问文件中某个位置，必须顺着链顺藤摸瓜，速度很慢。</p>
+</li>
+<li>
+<p>文件的连续分配会导致磁盘碎片,请问这是内零头还是外零头<br>
+既有外零头，也有内零头。<br>
+内零头是因为分配给文件的必定是整数个扇区，而一个文件未必刚好是整数个扇区。<br>
+外零头是因为随着文件的创建、删除，磁盘上的空闲空间变得不连续导致。</p>
+</li>
+<li>
+<p>设备驱动程序的主要功能是什么？<br>
+设备驱动程序知道设备的特性，知道怎样和设备打交道。<br>
+操作系统中的设备无关部分，通过使用设备驱动程序提供的服务，来跟设备打交道。</p>
+</li>
+<li>
+<p>简述最佳适应算法最差适应算法和最先适应算法的基本思想<br>
+最佳适应算法：空闲区从小到大排序(男生从矮到高排队)<br>
+最差适应算法：空闲区从大到小排序(男生从高到矮排队)<br>
+最先适应算法：空闲区按从前到后排序(男生按学号从前到后排队)</p>
+</li>
+<li>
+<p>什么是系统抖动?如何减少系统抖动<br>
+在虚拟内存中，刚把一页/一段调出内存，然后紧接着又要把该页/段调入内存，如此反复。<br>
+好的置换算法可以减少抖动，增加分配给进程的内存块数量也可以减少抖动。</p>
+</li>
+<li>
+<p>存储保护是否可以完全由软件实现？为什么<br>
+不行。<br>
+因为没有硬件的帮助，无法阻止一个进程访问其他进程的代码和数据。</p>
+</li>
+</ol>
+<h2 id="处理器管理">处理器管理</h2>
+<h3 id="概念">概念</h3>
+<p>非抢占式调度：当某进程占用了CPU后就一直运行直到运行结束后才放弃CPU,或者在运行时被阻塞放弃</p>
+<p>作业概念主要用于批处理系统中,如UNIX这样的分时系统就没有作业的概念。<br>
+分时系统中用户可以通过命令解释程序逐条输入命令,提交一个作业或作业步.<br>
+分时系统的作业提交是一次用户上机交互的过程,因此可以把终端进程的创建看作一个交互作业的开始,<br>
+终端进程:系统启动时通过与系统连接的终端,为每个终端创建一个终端进程来接受终端用户的作业处理要求</p>
+<p>批处理系统属于脱机,分时属于联机</p>
+<p>CPU利用率=CPU有效工作时间/CPU运行总时间(工作加空闲)</p>
+<p>周转时间 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>i</mi></msub><mo>=</mo><mtext>作业</mtext><mi>i</mi><mtext>完成时间</mtext><mo>−</mo><mtext>作业</mtext><mi>i</mi><mtext>提交时间</mtext><mo>=</mo><mtext>作业</mtext><mi>i</mi><mtext>运行时间</mtext><mo>+</mo><mtext>作业</mtext><mi>i</mi><mtext>等待时间</mtext></mrow><annotation encoding="application/x-tex">T_i=作业i完成时间-作业i提交时间=作业i运行时间+作业i等待时间</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="mord cjk_fallback">作</span><span class="mord cjk_fallback">业</span><span class="mord mathdefault">i</span><span class="mord cjk_fallback">完</span><span class="mord cjk_fallback">成</span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">间</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord cjk_fallback">作</span><span class="mord cjk_fallback">业</span><span class="mord mathdefault">i</span><span class="mord cjk_fallback">提</span><span class="mord cjk_fallback">交</span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">间</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="mord cjk_fallback">作</span><span class="mord cjk_fallback">业</span><span class="mord mathdefault">i</span><span class="mord cjk_fallback">运</span><span class="mord cjk_fallback">行</span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">间</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord cjk_fallback">作</span><span class="mord cjk_fallback">业</span><span class="mord mathdefault">i</span><span class="mord cjk_fallback">等</span><span class="mord cjk_fallback">待</span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">间</span></span></span></span></p>
+<p>对于同时到达的n个作业各个执行时间分别为ti<br>
+平均周转时间为在<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><msub><mi>t</mi><mn>1</mn></msub><mo>+</mo><mfrac><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><mi>n</mi></mfrac><msub><mi>t</mi><mn>2</mn></msub><mo>+</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo>+</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><msub><mi>t</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">T=t_1+\frac{n-1}{n}t_2+...+\frac{1}{n}t_n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.76508em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.190108em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.190108em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></p>
+<p>作业带权周转时间 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><mtext>作业</mtext><mi>i</mi><mtext>周转时间</mtext><msub><mi>T</mi><mi>i</mi></msub></mrow><mtext>运行时间</mtext></mfrac><mo>=</mo><mn>1</mn><mo>+</mo><mfrac><mrow><mtext>作业</mtext><mi>i</mi><mtext>等待时间</mtext></mrow><mrow><mtext>作业</mtext><mi>i</mi><mtext>运行时间</mtext></mrow></mfrac></mrow><annotation encoding="application/x-tex">W_i=\frac{作业i周转时间T_i}{运行时间}=1+\frac{作业i等待时间}{作业i运行时间}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.233431em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8884309999999999em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord cjk_fallback mtight">运</span><span class="mord cjk_fallback mtight">行</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4101em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord cjk_fallback mtight">作</span><span class="mord cjk_fallback mtight">业</span><span class="mord mathdefault mtight">i</span><span class="mord cjk_fallback mtight">周</span><span class="mord cjk_fallback mtight">转</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:-0.13889em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.217331em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.872331em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord cjk_fallback mtight">作</span><span class="mord cjk_fallback mtight">业</span><span class="mord mathdefault mtight">i</span><span class="mord cjk_fallback mtight">运</span><span class="mord cjk_fallback mtight">行</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord cjk_fallback mtight">作</span><span class="mord cjk_fallback mtight">业</span><span class="mord mathdefault mtight">i</span><span class="mord cjk_fallback mtight">等</span><span class="mord cjk_fallback mtight">待</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></p>
+<p>响应比<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mi>p</mi></msub><mo>=</mo><mfrac><mtext>响应时间</mtext><mrow><mtext>运行时间</mtext><mo>=</mo><mn>1</mn><mo>+</mo><mfrac><mtext>等待时间</mtext><mtext>运行时间</mtext></mfrac></mrow></mfrac></mrow><annotation encoding="application/x-tex">R_p=\frac{响应时间}{运行时间=1+\frac{等待时间}{运行时间}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:-0.00773em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">p</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.533596em;vertical-align:-0.661265em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.872331em;"><span style="top:-2.579535em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord cjk_fallback mtight">运</span><span class="mord cjk_fallback mtight">行</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span><span class="mrel mtight">=</span><span class="mord mtight">1</span><span class="mbin mtight">+</span><span class="mord mtight"><span class="mopen nulldelimiter sizing reset-size3 size6"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8720928571428572em;"><span style="top:-2.656em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord cjk_fallback mtight">运</span><span class="mord cjk_fallback mtight">行</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span></span></span></span><span style="top:-3.2255000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line mtight" style="border-bottom-width:0.049em;"></span></span><span style="top:-3.384em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord cjk_fallback mtight">等</span><span class="mord cjk_fallback mtight">待</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.344em;"><span></span></span></span></span></span><span class="mclose nulldelimiter sizing reset-size3 size6"></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord cjk_fallback mtight">响</span><span class="mord cjk_fallback mtight">应</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.661265em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></p>
+<h3 id="调度算法">调度算法</h3>
+<ol>
+<li>FCFS先来先服务<br>
+非抢占式</li>
+<li>SJF/SPF 短作业/短进程</li>
+<li>RR时间片轮转<br>
+选择就绪队列中的第一个队列,分配一个时间片用完放弃CPU进入队尾,如为用完被某事件阻塞,进入阻塞队列队尾,等待阻塞事件完成才重新返回队尾</li>
+<li>HRRF 高响应比<br>
+非抢占式<br>
+每次有作业加入重新计算响应比之前以及运行的会一直运行</li>
+<li>MLFQ 多级反馈队列<br>
+第一级队列优先级最高但时间片最少</li>
+</ol>
+<h2 id="进程同步与通信">进程同步与通信</h2>
+<p>做题流程<br>
+先规定信号量 写出初值<br>
+然后写出活动主体 之后写出具体步骤</p>
+<p>信号量类比<br>
+售票员说门已关好(0)<br>
+司机说车已停稳(0)</p>
+<p>最多容纳100人<br>
+代书板(100)<br>
+登记簿(1)</p>
+<p>桶(3)<br>
+井(1)<br>
+缸的剩余容量(10)empty<br>
+缸里的水量(0)full<br>
+缸的使用权(1)</p>
+<p>票(1) 磁带(1) 电池(1) 播放器(1)</p>
+<p>A的成长空间(M-1)<br>
+B的成长空间(N-1)</p>
+<h2 id="存储管理">存储管理</h2>
+<h2 id="设备管理">设备管理</h2>
+<h2 id="文件管理">文件管理</h2>
+]]></content>
+      <tags>
+        <tag>大三</tag>
+        <tag>考试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网络协议分析实验报告</title>
+    <url>/zh/internet-protocol-lab/</url>
+    <content><![CDATA[<h2 id="arp地址解析协议">ARP地址解析协议</h2>
+<p>在网络层和链路层接口的一部分运行<br>
+ARP是地址解析协议,用于实现IP地址到MAC地址的映射</p>
+<p>过程<br>
+1、 PC1想发送数据到PC2，首先检测本地缓存ARP缓存表和PC2IP匹配的MAC。<br>
+2、如果没有找到此条目，那么PC1将广播一个ARP请求帧到本地网络的所有主机。本地网络上每台主机都接受ARP请求检查是否和自己IP地址匹配。如果不匹配，丢弃该ARP请求。<br>
+3、找到和PC2IP匹配的MAC，PC2首先将PC1的IP和MAC存入PC2的ARP缓存表，然后PC2将包含其MAC地址的ARP应答报文单播到PC1上。<br>
+4、PC1收到报文，将PC2 IP和MAC存入自己ARP缓存表<br>
+5、由此PC1和PC2可以正常通信，ARP作用到此结束。</p>
+<p>Hardware type ：占2字节，硬件类型，标识链路层协议。以太网（Ethernet）是1<br>
+Protocol type： 占2字节，协议类型，标识网络层协。IPv4是0x0800。<br>
+Hardware size ：占1字节，硬件地址大小，标识MAC地址长度，这里是6个字节（48bit）。<br>
+Protocol size： 占1字节，协议地址大小，标识IP地址长度，这里是4个字节（32bit）。<br>
+Opcode： 占2字节，操作代码，标识ARP数据包类型，1表示请求，2表示回应。<br>
+Sender MAC address ：占6字节，发送者MAC。<br>
+Sender IP address ：占4字节，发送者IP。<br>
+Target MAC address ：占6字节，目标MAC，此处全0表示在请求。<br>
+Target IP address： 占4字节，目标IP。</p>
+]]></content>
+      <tags>
+        <tag>大三</tag>
+        <tag>intetnet protocol</tag>
+        <tag>报告</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>微机考试</title>
+    <url>/zh/microcomputer-exam/</url>
+    <content><![CDATA[<p>考试</p>
+<a id="more"></a>
+<h2 id="10章-8253-8255">10章 8253 8255</h2>
+<h3 id="8253">8253</h3>
+<ul>
+<li>读表写控制字 读写格式随便？可以直接用2进制 如 mov al,00010000B</li>
+<li>方波等于方式3</li>
+<li>初值计算要注意 N=fclk/fout=fclk*tout=tout/tclk</li>
+<li>字母开头的16进制数开头要加0 如 mov al,0b6h<br>
+程序初始化时要加上过程定义</li>
+<li>count0 proc<br>
+ret<br>
+count0 endp</li>
+<li>按BCD码计数时的不同 例如初值4000  BCD码有两种方式 mov ax,4000h mov al,00 out dx,al mov al,40 out dx,al</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>大三</tag>
+        <tag>考试</tag>
+        <tag>router</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/zh/suibi/</url>
+    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="抱歉, 这个密码看着不太对, 请再试试." data-whm="抱歉, 这个文章不能被校验, 不过您还是能看看解密后的内容.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="764b55e88865f9ee56737dacc4813bc30c06608348c335f2f7ff06cbbb604247">9a075f1281a5cca4339d183fde5abe77e114bb6f08c67668115a36874838790b06915d5136854498c624c3dc9fb4cb24c54c9c933fdb073237102ce0ea958fb1cb79dcddaccb0881e72e6349b017020407e769e30224e398f9b4ca0deb093e4ba8e17e589a4120c6ba38ff4cb48c487cf902e32765a9cd84d5b8aae8751a026b752feb5d962b02445251e1ecfbb14c9bd1a0d7af48b974aad0feee408c84090e806de4911c81faafb8e620b573b16239f20cbfab5ec80fdab629e20b0639ba0831079ea0457fe9bfa8d2d4eb4a55eee8b16e5bcdca03658351305838d380acecc76046106a5978fbb06c7d80db3a193f3fe6c1f7a4f7f66eb2a95c4e1d9a20bc12665247f60bb655961d9fb186024521306251cfa445aa8c8ed4fc6d91350d28fbfc87aa31a60a03ae1a3181c9ff12a118989fb22b89dd64862bbb03bd5238c93e4f6ca33f75f4506a968c2f4fa5206ef0e8a0d6456154e896d59512db9c4c48ae2e401e40d186185d5e2724c898976c07e109de6f8d072f2a0867c68eabc905ef31f1e1a6b6021b0da5ddcec0f4f2857912a03d3b81041920c9df7e3483eba4b7f7f3bb7eb70ec6b5fce478d78a8d677e78e0eea96d918f620d2a5c8abec0340a455396aeba09f43a3e0912d426e3f3a64c905b38e27e1eb43f044cf7b82ac5d8d6fad643def072046e910e4c40dff1949998440c64276a79bb9dae61e67ad5864c9ded7375f4ba94a0ed95db3103d49fc930976252921d91fa963269a839e3e8203bd62abcdecaee36e5fc9432c3f1aa4f9222a7234fcafc85002d69f93269f6064772369bd4c7a1333b3df3c2e9f6fd9a24b2be0623b83ed7232ecbe6e15c4ea4db911faafb3fcdbf72f98ae6f68fd9938a893b9bb0db98f199351337abda3c92ad2a8d17651a06668e613ce33296f177ede6874fb326a42778e77d28cb33158be00a64878d2dff0967e3ba7444e9d276393aa6eeabec9fbc9cf9d0193dfd200dc223fb884151efce3b3443a78e7068811936960328f7d8527656c5c7b88660871fb763dd9acf13f236110aab1a239bd84f1a4c1a126fa0ab5588a470038daa54e40ede433ac4bf61f610a0640e552fd2ac563eccea05b73798bcb5ed8379dfe52115d8ffd3a346f17d7e4be98da4e44bc5816230637fb428797425b85564b2288f6cb2594d02e1c889e57d7a884551876c9789eb7106afaa789d74695f7df369867475c48da7476f12d8ca34cad44b55d8baee7f3c17f06f3c690997ee211efef20934c799945544dfdeddd04053feda825ceb6448c1fee236d493efdc624631f22a11bb6f54005c02b05b89d702c21b28a8ac60e3992959867565c30ef2e53effdb4e01a202a315dac4a5c80f60f008a9ceef3048cb2744351c3f7c1bdf597fdcc6aab2f538f4b8d3d6a07706f0b1041de87cbd9e46b7b63fed900daebd9df861e16971eee89783437dece5deb6fde1e323d12d882e71cea41306c31d54934837ea95bdced9b0ab0150087960a39793f6e554ff84e8c366a955043fa4d5d64a1964b7e3ed5d59d4422cae0f0bf93960c7340d07839cfeebf013f5412ce69ff4885b767a889124c32d171c046aa0fda215e5210a13cdf8d9121b4458633d57223f9277e2514a5abab0e37debab028573544810f531cbe45f5deefb414d0db76612cd1addadf01fb29173b603ab08020981f2f4ae3786eb8520575d19b8a61da47c1e5edc6d70297e28913c1bcc54bd3b4aeff8c9db47477938ce81d2d40ecac65d8949b8878784534aeef415f1677365bae6390238ca84b9e600e8ebbd93e3a1120c74af6cb43c8a0449c214b96c684c124fd8e91af7b39c3251e0b96e51b2769b8a66fe61f532b26b66d4a210a9bb6c73480ddd37449897c8336a8289f7fac08ec4e64b5da4260bf33797e0a65d60514316d98f96de760d18a53b7bd2fad5c667879cbe2dd00dc1e20857acab7349d993dc228f34c7d75add892a86efa2ffad9ce5b346e08e077e8c4b26219fd3a7228c2191e9dae7bb6f022743898d0c449ea43c00a55793f4cc70293aefa42a943576b6ba2cef136f5de7f1a9f3c8641e5b4af1d9fd42f5faf61122ab2e9a3709afe0eccdf72badfb36bb14a649cb105eb86a9db433b9297682f4e053ef77a658e03c3afbf0165c46d5d26ce8d12a5dfa4949fba206906c972054dec75420cb3598a4ea7450ce048b2f52c4026c1911df1180f9caa522d92667fbe555ddb7d707f33f7161a69db7d7bbdbd2054d7e0d33aedab1c80092b5dd4b28e1b3abbe16c44f13418bc9452dfe1f8b8f47ae3d73d9e30ae79307a76f312f872ec33d7125702b90be745ba16a3b150c88c95175d1403eead7bd94aa21a541f3732c570da5ca255c23cc6c2ff613ca95da579a66af46b6b959b174040fa5707c2a890dfb57a9bf1bf8c8eeeaa59034caebef0d6ec8</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">您好, 这里需要密码.</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
+      <tags>
+        <tag>作为随笔加密</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网络协议考试</title>
+    <url>/zh/protocol-analysis/</url>
+    <content><![CDATA[<p>考试</p>
+<!-- 考试 -->
+<h2 id="选择-20">选择 20</h2>
+<p>源地址字段不能包含多播或广播地址Cannot contain a multicast or broadcast address</p>
+<ol>
+<li>Which of the following organizations develops and maintains RFCs?<br>
+a. ISOC b. IAB<br>
+c. IRTF <strong>d. IETF</strong></li>
+<li>Which of the following organizations manages Internet domain names and network addresses?<br>
+<strong>a. ICANN</strong> b. IETF<br>
+c. IRTF d. ISOC</li>
+<li>What is the common name for PDUs at the Data Link layer ?<br>
+<strong>a. frames</strong> b. packets<br>
+c. segments d. Data Link PDUs</li>
+</ol>
+<h2 id="名词解释-15">名词解释 15</h2>
+<ol>
+<li>TCP Transmission Control Protocol 传输控制协议 IPV4 协议字段是6</li>
+<li>UDP User Datagram Protocol 用户数据报协议 IPV4 协议字段是17 传输层上的无连接TCP/IP协议</li>
+<li>RFC Request For Comments 请求注解</li>
+<li>IP Internet Protocol 网际协议</li>
+<li>HTTP HypeText Transfer Protocol</li>
+<li>WWW World Wide Web</li>
+<li>ISO/OSI International Organization for Standardization Open Systems Interconnection</li>
+<li>PDU Protocol Data Unit</li>
+<li>DNS Domain Name System</li>
+<li>ICMP Internet Control Message Protocol</li>
+<li>DHCP Dynamic Host Configuration Protocol 动态主机配置协议</li>
+<li>ARP Address Resolution Protocol</li>
+<li>表示层 Presentation Layer</li>
+<li>VPN Virtual Private Network</li>
+<li>URL Uniform Resource Locator</li>
+<li>TTL Time to Live 数据包还能传送的剩余距离</li>
+</ol>
+<h2 id="图形填空-5">图形填空 5</h2>
+<ol>
+<li>协议分析的要素<br>
+<img src="https://i.loli.net/2021/06/03/WKM3f4XBzyPvUL8.png" alt="quicker_9e1c32cd-5ba6-4c58-a307-47bffa0249af.png"><br>
+<img src="https://i.loli.net/2021/06/03/KE9mnZiyoT8u2Yg.png" alt="quicker_ca7311a8-6277-4827-9971-3ab1003e734c.png"><br>
+1 混杂模式的网卡和驱动程序<br>
+2 包过滤器<br>
+3 跟踪缓冲区<br>
+4 解码功能<br>
+5 警报器<br>
+6 统计功能</li>
+<li>Packet headers and different protocol layers 数据包首部与不同的协议分层<br>
+<img src="https://i.loli.net/2021/06/10/BHE6eYbD82uit15.png" alt="quicker_854dfff3-69de-4b7d-8106-87a38c3c4a41.png"><br>
+<img src="https://i.loli.net/2021/06/10/MkoLYGWhl52ciyQ.png" alt="quicker_c8662232-56cc-4802-991f-1f342f8e3699.png"></li>
+</ol>
+<h2 id="简答-20">简答 20</h2>
+<ol>
+<li>计算机网络安全防护项目有哪些<br>
+根据实际工程项目的经验，对于整体的计算机网络安全防护来说有十大项目：<br>
+网络服务器分量最重占八项，客户端占一项，防火墙占一项。原因在于企业的重要数据（客户数据、库存数据、交易数据等）都在网络操作系统上。<br>
+服务器
+<ul>
+<li>账户与密码</li>
+<li>权限的管理</li>
+<li>修补系统</li>
+<li>系统日志文件</li>
+<li>不间断电源管理</li>
+<li>备份管理</li>
+<li>防病毒管理</li>
+<li>门禁管理<br>
+客户端：</li>
+<li>客户端的教育与训练<br>
+防火墙：</li>
+<li>防火墙</li>
+</ul>
+</li>
+</ol>
+<h2 id="英文翻译-20">英文翻译 20</h2>
+<ol>
+<li>Protocol Analysis ( also referred to as network analysis ) is the process of tapping into the network communications system, capturing packets that cross the network, gathering network<br>
+statistics, and decoding the packets into readable form.<br>
+协议分析(也称为网络分析)是进入网络通信系统捕获穿行在网络中的数据(报文),收集网络统计信息,将数据包解码为可阅读形式的过程</li>
+<li>broadcast address 广播地址: the all-ones address for a network or subset,which provides a way to send the same information to all interfaces<br>
+on a network<br>
+网络或子网的全1地址,这种地址提供一种把相同信息发送给网络上所有网卡的方法</li>
+<li>address masquerading 地址伪装: a method of mapping many internal(i.e private)nonroutable address to a single external(i.e,public)ip address for the pirpose of sharing a single internet connection-also referred to as address hiding<br>
+一种把多个内部的(即私有的)非路由地址映射到单个外部(即公用的)IP地址的方法.其目的是为了共享单个Internet连接,又称位地址隐藏</li>
+<li>anycast address a type of ordinary address in IPv6 that can be assigned to more than one host or interface.Packets pointed to an anycast address are delivered to the holder of that address nearest to the sender in terms of routing <a href="http://distance.An">distance.An</a> anycast address does not apply to IPv4<br>
+是IPv6中的一种地址类型,可以分配给多个主机或接口.指向任播地址的数据包,可以根据路由距离传递给离发送方最近的那个地址.任播地址不能用于ipv4</li>
+<li>connectionless protocol:a protocol that simply sends datagrams without establishing ,managing,or otherwise handling a connection between sender and receiver;UDP is a connectionless Transport layer protocol<br>
+一种网络协议,只负责发送数据包,创建 管理或处理发送方和接收方之间的连接.udp就是一种无连接协议</li>
+<li>connection-oriented transport mechanisms : A transport layer protocol that establishs a session between two computers,provides error checking and guarantees delivery<br>
+一种传输层协议,它在两个计算机之间创建一个会话,提供错误检测,确保成功传输.</li>
+<li>jumbogram: a specification for allowing very large(beyond 4 gigabyte)packets to be transported using ipv6 used only in special circumstance such as on large backbone<br>
+对允许ipv6传送超大(大于4g字节)数据包的规范说明 仅仅用于特殊环境下比如大型主干路由</li>
+<li>link MTU 链路最大传输单元:this is the MTU capacity of a specific link within a path MTU. the smallest link mtu determine the MTU size of ipv6 packets for the path<br>
+某个路径MTU中特定链路的MTU容量.最小的链路MTU决定了路径中ipv数据包的MTU</li>
+<li>precedence :a definition of priority for an ip packet.routers may process higher-priority packets before lower-priority packets when a router queue is congested<br>
+ip数据包优先权的一个定义.当路由器队列被阻塞时路由器可以在优先级低的数据包之前优先处理较高优先级的数据包</li>
+</ol>
+<h2 id="应用题-20">应用题 20</h2>
+<ol>
+<li>IPV4 Header Fields andFunctions<br>
+<img src="https://i.loli.net/2021/06/07/IBK4FrEfHxwemWj.png" alt="quicker_3bd43df2-c8be-4d10-9c3a-17e0478f91df.png"><br>
+<img src="https://i.loli.net/2021/06/07/UdWjnTfrvDRLeEX.png" alt="quicker_0078b292-2e58-4764-9955-371feb3fefca.png"></li>
+<li>协议<br>
+一个明显的方法是检查协议分析器中的协议列表，该分析仪设置为在正常负载和活动条件下在网络上运行一天或更长时间。即使管理员没有捕获太多数据，统计分析也会汇编其在网络上使用时观察到的所有 T CP/IP 协议的列表。通过仔细审查此列表，并使用很少使用的任何其他协议来增强它，管理员可以轻松地为其 UNIX 机器构建最小协议列表</li>
+<li>为什么错误太多不好<br>
+网络上的过度错误使通常可用的带宽完全无法使用。因此，网络的整体有效利用率通常会下降，即使网络的测量利用率实际上可能会增加。因为错误仍然消耗带宽，即使它们没有传达任何有用的内容，它们也被认为是&quot;带宽窃取者&quot;，应该尽快定位和纠正。因此，网络监视器和协议分析器通常设置报警阈值，此时错误会消耗 2% 的网络带宽。虽然在没有基础病理的情况下偶尔会达到这个水平，但如果达到这个水平有任何规律性，它通常表明网络上出了问题  同样，由于有线电视段上的所有电台都必须阅读广播流量，在必须回复或回复其内容的偶然机会上，过度广播对网络利用也有同样的影响——它们窃取了本来可以使用的带宽，而没有实际的好处。与错误一样，广播流量相同的 2% 阈值是设置闹钟的好地方。事实上，有一个严重的病理学，称为&quot;广播风暴&quot;（通常是由某种网络接口故障引起的），其中所有可用的网络带宽都被虚假广播所消耗。单单这基本上使网络无法使用，定位和修复这样的问题是一个高度优先事项 ！</li>
+<li>子网划分<br>
+轻松解决这个问题的关键来自假设每个建筑将有自己的单个子网。这意味着子网掩码中的位数需要覆盖至少六个可处理子网。因此，您可以在第二个八分之一的子网面罩中使用三个位，因为 23 - 2 = 6。由于任何 A 类地址的默认子网面罩为 255.0.0.0，因此表示子网面罩为 255.224.0.0。因此，每个子网的可地址主机数量为 221 - 2 或 2，097，152（因为网络和子网地址总共使用 11 位，因此主机还剩下 21 位）。因此，在任何单个网络上将机器数量增加到 1，024 台没有任何影响。实际上，在公司决定扩建校园的偶然机会上，使用四位或五位子网面罩来应对这种情况可能是个好主意。四个位共提供 14 个子网，五位共提供 30 个子网。两者都没有将可处理的机器数量减少到值得担心的水平（一个四位子网面膜</li>
+<li><img src="https://i.loli.net/2021/06/28/1olHWbEGu45mdyR.png" alt="quicker_0875b96f-3484-49ec-b289-5b98309dbcb1.png"></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>大三</tag>
+        <tag>考试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>微机学习笔记</title>
+    <url>/zh/micro-note/</url>
+    <content><![CDATA[<p>课本</p>
+<a id="more"></a>
+<h3 id="考核">考核</h3>
+<ol>
+<li>73开，平时10%，实验20%，试卷70%</li>
+<li>性能指标<br>
+字长 时钟频率、集成度<br>
+字长：处理器每个单位时间内可以处理的二进制数据位数称计算机字长<br>
+主存大小判断</li>
+<li>8086<br>
+10 换行 0 空字符 9制表符 tab 13 回车 32 空格</li>
+</ol>
+<h3 id="第二章">第二章</h3>
+<h4 id="2-3-存储器组织">2.3 存储器组织</h4>
+<h5 id="2-3-1-存储模型">2.3.1 存储模型</h5>
+<ol>
+<li>
+<p>平展存储模型<br>
+对程序来说存储器是一个连续的地址空间,称为线性地址空间.程序需要的代码数据堆栈都包含在这个地址空间</p>
+</li>
+<li>
+<p>段式存储模型<br>
+对程序来说存储器由一组独立的地址空间组成,独立的地址空间称为段 代码数据堆栈位于分开的段中</p>
+</li>
+<li>
+<p>实地址存储模型<br>
+是段式存储的特例 是8086处理器的存储模型</p>
+</li>
+<li>
+<p>处理器功能结构<br>
+基本了解<br>
+8086的功能结构 复习 计组</p>
+</li>
+</ol>
+<ul>
+<li>总线接口单元和执行单元</li>
+<li>指令预取</li>
+<li>80386<br>
+分段 分页</li>
+<li>Penium的功能结构</li>
+</ul>
+<ol start="2">
+<li>编程结构寄存器</li>
+</ol>
+<ul>
+<li>IA-32常用寄存器 加E代表扩展 32位寄存器 不加E是16位寄存器  都是32位相乘如何实现
+<ul>
+<li>EAX(Accumulator) 累加器</li>
+<li>BX(Base)        基址寄存器</li>
+<li>CX(Counter)     计数器</li>
+<li>DX(Data)        数据寄存器</li>
+<li>SI(Source Index) 源变址寄存器</li>
+<li>DI(Destination Index) 目的变址寄存器</li>
+<li>BP(Base Pointer)  基址指针</li>
+<li>SP(Stack Pointer)  堆栈指针</li>
+</ul>
+</li>
+<li>段寄存器
+<ul>
+<li>CS 代码段的段基地址</li>
+<li>SS 堆栈段</li>
+<li>DS  数据段的段基地址</li>
+</ul>
+</li>
+<li>EFLAGS 标志寄存器<br>
+标志寄存器概念要背 可能出填空<br>
+标志有6个 用5个 OF 溢出 SF 符号判断正负 ZF AF CF进位或借位判断<br>
+溢出标志OF(Over flow flag)                             OV(1)                         NV(0)</li>
+</ul>
+<p>方向标志DF(Direction flag)                             DN(1)                         UP(0)</p>
+<p>中断标志IF(Interrupt flag)                             EI(1)                         DI(0)</p>
+<p>符号标志SF(Sign flag)                                  NG(1)                         PL(0)</p>
+<p>零标志ZF(Zero flag)                                    ZR(1)                         NZ(0)</p>
+<p>辅助标志AF(Auxiliary carry flag)                       AC(1)                         NA(0)</p>
+<p>奇偶标志PF(Parity flag)                                PE(1)                         PO(0)</p>
+<p>进位标志CF(Carry flag)                                 CY(1)                         NC(0)</p>
+<p>Flag 设置值<br>
+溢出 OV = 1<br>
+方向 UP = 1<br>
+中断 EI = 1<br>
+Sign PL = 1<br>
+零 ZR = 1<br>
+辅助 Carry AC = 1<br>
+Parity PE = 1<br>
+Carry CY = 1</p>
+<ul>
+<li>EIP 指令指针</li>
+</ul>
+<ol start="3">
+<li>
+<p>存储器组织与访问</p>
+</li>
+<li>
+<p>IDE操作</p>
+</li>
+<li>
+<p>数据寻址-MOV指令</p>
+</li>
+</ol>
+<h3 id="数据表示">数据表示</h3>
+<ul>
+<li>知识点<br>
+进制转换 原码 反码 补码 BCD码 看组原第二章<br>
+可显示和打印的字符20H后的94个编码 空格是20H 大小写字母转换也是相差20H 小写字母的ASNI码值大 A 41H 0-9 30-39H</li>
+</ul>
+<h5 id="2-5-2-寄存器寻址方式">2.5.2 寄存器寻址方式</h5>
+<ol>
+<li>段寄存器的默认和超越</li>
+<li>偏移地址的组成</li>
+<li>直接寻址</li>
+<li>寄存器间接寻址<br>
+如 mov edx,[ebx] 即mov edx,DS:[ebx]</li>
+<li>寄存器相对寻址</li>
+<li>变址寻址<br>
+如 mov edi,[ebx][esi] EDI=DS:[EBX+EXI]</li>
+</ol>
+<h3 id="第3章">第3章</h3>
+<h4 id="3-3-变量应用">3.3 变量应用</h4>
+<ol>
+<li>变量定义<br>
+dup 复制操作符 重复次数 dup(重复参数)<br>
+变量数组定义 如 a dword ? 只需在输入时 invoke scanf,offset informat,offset ai,offset ai+4,offset ai+8即可代表输入3个<br>
+?要放在最后声明 不然会出错<br>
+变量名表示初值表首元素的逻辑地址 是可以省略的</li>
+</ol>
+<h4 id="3-3-2-变量属性">3.3.2 变量属性</h4>
+<p>类型操作符<br>
+type 返回一个数值 表明该变量是什么类型 如byte 是1个字节<br>
+sizeof 返回整个变量占的字节数<br>
+lengthof 返回整个变量的元素数<br>
+arr_len = lengthof array  ;返回变量的数据项数<br>
+arr_size = sizeof array<br>
+arr_type = type array</p>
+<h4 id="3-4-数据传送指令">3.4 数据传送指令</h4>
+<h5 id="3-4-1-通用数据传送指令">3.4.1 通用数据传送指令</h5>
+<ol>
+<li>
+<p>mov<br>
+目的操作数 寄存器 存储单元<br>
+源操作数 立即数 寄存器 存储单元<br>
+但不支持 存储单元与存储单元间的运算<br>
+双操作数指令 两个操作数之一必须有明确类型即是字还是双字或者字节如果没有用 byte ptr指明<br>
+像寄存器eax32位 双字类型<br>
+在MASM中各种变量类型被设为双字 如sizeof 返回的就是双字类型的即使没有声明<br>
+专用寄存器一般指令无法使用</p>
+</li>
+<li>
+<p>XCHG<br>
+目的操作数 寄存器 存储单元<br>
+源操作数  寄存器 存储单元<br>
+但不支持 存储单元与存储单元间的运算<br>
+xchg eax eax 等于nop空指令</p>
+</li>
+</ol>
+<h4 id="3-5">3.5</h4>
+<h5 id="3-5-2-加法指令">3.5.2 加法指令</h5>
+<ol>
+<li>add<br>
+目的操作数 寄存器 存储单元<br>
+源操作数 立即数 寄存器 存储单元<br>
+但不支持 存储单元与存储单元间的运算</li>
+</ol>
+<h5 id="3-5-3-减法指令">3.5.3 减法指令</h5>
+<ol>
+<li>
+<p>sub<br>
+目的操作数 寄存器 存储单元<br>
+源操作数 立即数 寄存器 存储单元<br>
+但不支持 存储单元与存储单元间的运算</p>
+</li>
+<li>
+<p>dec<br>
+支持寄存器和存储单元</p>
+</li>
+<li>
+<p>cmp<br>
+目的操作数 寄存器 存储单元<br>
+源操作数 立即数 寄存器 存储单元<br>
+但不支持 存储单元与存储单元间的运算<br>
+影响 OF SF zf cf</p>
+</li>
+</ol>
+<ul>
+<li>OF(Overflow Flag) 如果最高位发生变化置1(只进行一次移位)如果进行多次移位OF不确定</li>
+<li>SF(Sign Flag) 最高位为1 SF为1</li>
+<li>ZF(Zero Flag) 结果为0 ZF为1</li>
+<li>PF(Parity Flag) 偶数个1PF为1 仅反应最低八位的个数</li>
+</ul>
+<ol start="4">
+<li>NEG(Negative)<br>
+求补指令 也是单操作数指令 求补即用零减去操作数然后结果返回操作数<br>
+用于求负数的补码或由负数补码求绝对值<br>
+对于符号不相同的两个数(0和负数)相减 如果被减数和结果符号相同 则OF=0</li>
+</ol>
+<h5 id="3-5-4-乘除法">3.5.4 乘除法</h5>
+<ol>
+<li>乘法<br>
+无符号数乘法 mul<br>
+有符号数 imul<br>
+有符号数乘法支持双操作数乘法和三操作数乘法<br>
+乘法会影响OF CF<br>
+reg 存储单元 mem寄存器<br>
+不支持立即数<br>
+且双操作数指令的结果和乘数位数相同</li>
+</ol>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><menclose notation="top left"><mtable rowspacing="0.15999999999999992em" columnalign="center center center center" columnlines="solid solid solid" columnspacing="1em" rowlines="solid solid solid"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mtext>目的操作数</mtext></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mtext>源操作数</mtext></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mtext>积</mtext></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>A</mi><mi>l</mi></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>存储单元</mtext><mi mathvariant="normal">/</mi><mn>8</mn><mtext>位寄存器</mtext></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>A</mi><mi>X</mi></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>A</mi><mi>X</mi></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>存储单元</mtext><mi mathvariant="normal">/</mi><mn>8</mn><mtext>位寄存器</mtext></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>A</mi><mi>X</mi><mi>D</mi><mi>X</mi></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>E</mi><mi>A</mi><mi>X</mi></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>存储单元</mtext><mi mathvariant="normal">/</mi><mn>8</mn><mtext>位寄存器</mtext></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>E</mi><mi>A</mi><mi>X</mi><mi>E</mi><mi>D</mi><mi>X</mi></mrow></mstyle></mtd></mtr></mtable></menclose></mrow><annotation encoding="application/x-tex">\begin{array}{|c|c|c|c}
+    \hline
+    目的操作数&amp; 源操作数&amp; 积 \\
+    \hline
+    Al&amp; 存储单元/8位寄存器&amp; AX  \\
+    \hline
+    AX&amp; 存储单元/8位寄存器&amp; AX DX\\
+    \hline
+    EAX&amp; 存储单元/8位寄存器&amp; EAX EDX \\
+\end{array}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:4.840000000000001em;vertical-align:-2.1500000000000004em;"></span><span class="mord"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.6900000000000004em;"><span style="top:-4.65em;"><span class="pstrut" style="height:4.65em;"></span><span class="mtable"><span class="vertical-separator" style="height:4.800000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-2.1500000000000004em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.6500000000000004em;"><span style="top:-4.8100000000000005em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord cjk_fallback">目</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">操</span><span class="mord cjk_fallback">作</span><span class="mord cjk_fallback">数</span></span></span><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span></span></span><span style="top:-2.4099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span><span style="top:-1.2099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mord mathdefault">A</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.1500000000000004em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:4.800000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-2.1500000000000004em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.6500000000000004em;"><span style="top:-4.8100000000000005em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord cjk_fallback">源</span><span class="mord cjk_fallback">操</span><span class="mord cjk_fallback">作</span><span class="mord cjk_fallback">数</span></span></span><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">储</span><span class="mord cjk_fallback">单</span><span class="mord cjk_fallback">元</span><span class="mord">/</span><span class="mord">8</span><span class="mord cjk_fallback">位</span><span class="mord cjk_fallback">寄</span><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">器</span></span></span><span style="top:-2.4099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">储</span><span class="mord cjk_fallback">单</span><span class="mord cjk_fallback">元</span><span class="mord">/</span><span class="mord">8</span><span class="mord cjk_fallback">位</span><span class="mord cjk_fallback">寄</span><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">器</span></span></span><span style="top:-1.2099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">储</span><span class="mord cjk_fallback">单</span><span class="mord cjk_fallback">元</span><span class="mord">/</span><span class="mord">8</span><span class="mord cjk_fallback">位</span><span class="mord cjk_fallback">寄</span><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">器</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.1500000000000004em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:4.800000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-2.1500000000000004em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.6500000000000004em;"><span style="top:-4.8100000000000005em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord cjk_fallback">积</span></span></span><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span><span style="top:-2.4099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span><span style="top:-1.2099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mord mathdefault">A</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.1500000000000004em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:4.800000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-2.1500000000000004em;"></span></span></span><span style="top:-3.7000000000000006em;"><span class="pstrut" style="height:4.65em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-4.9em;"><span class="pstrut" style="height:4.65em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-6.1000000000000005em;"><span class="pstrut" style="height:4.65em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-7.300000000000001em;"><span class="pstrut" style="height:4.65em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.1500000000000004em;"><span></span></span></span></span></span></span></span></span></span></p>
+<ol start="2">
+<li>除法<br>
+无符号数除法 div<br>
+有符号数除法 idiv<br>
+单操作数指令 源操作数支持寄存器和存储单元 隐含使用目的操作数<br>
+除法指令不能使用立即数<br>
+被除数比除数位数多<br>
+cdq 符号拓展指令<br>
+将eax拓展为EDX和EAX 把EDX的所有位都设成EAX最高位<br>
+常出现在除法运算前</li>
+</ol>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><menclose notation="top left"><mtable rowspacing="0.15999999999999992em" columnalign="center center center center" columnlines="solid solid solid" columnspacing="1em" rowlines="solid solid solid"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mtext>被除数</mtext></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mtext>除数</mtext></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mtext>商</mtext></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mtext>余数</mtext></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>A</mi><mi>X</mi></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>存储单元</mtext><mi mathvariant="normal">/</mi><mn>8</mn><mtext>位寄存器</mtext></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>A</mi><mi>L</mi></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>A</mi><mi>H</mi></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>D</mi><mi>X</mi><mo>:</mo><mi>A</mi><mi>X</mi></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>存储单元</mtext><mi mathvariant="normal">/</mi><mn>16</mn><mtext>位寄存器</mtext></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>A</mi><mi>X</mi></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>D</mi><mi>X</mi></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>E</mi><mi>D</mi><mi>X</mi><mo>:</mo><mi>E</mi><mi>A</mi><mi>X</mi></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext>存储单元</mtext><mi mathvariant="normal">/</mi><mn>32</mn><mtext>位寄存器</mtext></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>E</mi><mi>A</mi><mi>X</mi></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mi>E</mi><mi>D</mi><mi>X</mi></mrow></mstyle></mtd></mtr></mtable></menclose></mrow><annotation encoding="application/x-tex">\begin{array}{|c|c|c|c}
+    \hline
+    被除数&amp; 除数&amp; 商&amp; 余数 \\
+    \hline
+    AX&amp; 存储单元/8位寄存器&amp; AL&amp; AH   \\
+    \hline
+    DX:AX&amp; 存储单元/16位寄存器&amp; AX&amp; DX\\
+    \hline
+    EDX:EAX&amp; 存储单元/32位寄存器&amp; EAX&amp; EDX \\
+\end{array}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:4.840000000000001em;vertical-align:-2.1500000000000004em;"></span><span class="mord"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.6900000000000004em;"><span style="top:-4.65em;"><span class="pstrut" style="height:4.65em;"></span><span class="mtable"><span class="vertical-separator" style="height:4.800000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-2.1500000000000004em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.6500000000000004em;"><span style="top:-4.8100000000000005em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord cjk_fallback">被</span><span class="mord cjk_fallback">除</span><span class="mord cjk_fallback">数</span></span></span><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span><span style="top:-2.4099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathdefault">A</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span><span style="top:-1.2099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mord mathdefault">A</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.1500000000000004em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:4.800000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-2.1500000000000004em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.6500000000000004em;"><span style="top:-4.8100000000000005em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord cjk_fallback">除</span><span class="mord cjk_fallback">数</span></span></span><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">储</span><span class="mord cjk_fallback">单</span><span class="mord cjk_fallback">元</span><span class="mord">/</span><span class="mord">8</span><span class="mord cjk_fallback">位</span><span class="mord cjk_fallback">寄</span><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">器</span></span></span><span style="top:-2.4099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">储</span><span class="mord cjk_fallback">单</span><span class="mord cjk_fallback">元</span><span class="mord">/</span><span class="mord">1</span><span class="mord">6</span><span class="mord cjk_fallback">位</span><span class="mord cjk_fallback">寄</span><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">器</span></span></span><span style="top:-1.2099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">储</span><span class="mord cjk_fallback">单</span><span class="mord cjk_fallback">元</span><span class="mord">/</span><span class="mord">3</span><span class="mord">2</span><span class="mord cjk_fallback">位</span><span class="mord cjk_fallback">寄</span><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">器</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.1500000000000004em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:4.800000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-2.1500000000000004em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.6500000000000004em;"><span style="top:-4.8100000000000005em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord cjk_fallback">商</span></span></span><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="mord mathdefault">L</span></span></span><span style="top:-2.4099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span><span style="top:-1.2099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mord mathdefault">A</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.1500000000000004em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:4.800000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-2.1500000000000004em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.6500000000000004em;"><span style="top:-4.8100000000000005em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord cjk_fallback">余</span><span class="mord cjk_fallback">数</span></span></span><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="mord mathdefault" style="margin-right:0.08125em;">H</span></span></span><span style="top:-2.4099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span><span style="top:-1.2099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.1500000000000004em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span></span></span><span style="top:-3.7000000000000006em;"><span class="pstrut" style="height:4.65em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-4.9em;"><span class="pstrut" style="height:4.65em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-6.1000000000000005em;"><span class="pstrut" style="height:4.65em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-7.300000000000001em;"><span class="pstrut" style="height:4.65em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.1500000000000004em;"><span></span></span></span></span></span></span></span></span></span></p>
+<h4 id="3-6-位操作指令">3.6 位操作指令</h4>
+<h5 id="3-6-1-逻辑运算指令">3.6.1 逻辑运算指令</h5>
+<p>AND OR XOR 都是双操作数指令 且目的操作数支持寄存器和存储单元 源操作数支持 <code>立即数</code>、寄存器和存储单元.<br>
+注意 <strong>不能都是存储单元</strong></p>
+<ol>
+<li>AND<br>
+目的操作数 寄存器 存储单元<br>
+源操作数 立即数 寄存器 存储单元<br>
+但不支持 存储单元与存储单元间的运算<br>
+按位进行逻辑与结果返回目的操作数 CF=PF=0</li>
+<li>OR<br>
+目的操作数 寄存器 存储单元<br>
+源操作数 立即数 寄存器 存储单元<br>
+但不支持 存储单元与存储单元间的运算<br>
+按位进行逻辑与结果返回目的操作数 CF=OF=0</li>
+</ol>
+<p>因为大写字母与小写字母仅D_5不同<br>
+小写字母转大写 and DFh 1101 1111<br>
+大写转小写    or 20h   0010 0000<br>
+借助PF判断奇偶<br>
+and al 7fh 会改变目的操作数值<br>
+test 不会改变目的操作数</p>
+<ol>
+<li>NOT</li>
+<li>异或 XOR<br>
+清0</li>
+<li>TEST</li>
+</ol>
+<h5 id="3-6-2-移位指令">3.6.2 移位指令</h5>
+<p>移位指令是双操作指令</p>
+<ol>
+<li>移位指令<br>
+移位(Shift)指令分为逻辑(Logical)移位和算术(Arithmetic)移位<br>
+目的操作数支持寄存器和存储单元 源操作数支持立即数和存储器<br>
+逻辑 无符号  算术 有符号<br>
+SHL 逻辑左移 最低位补0 最高位进入CF<br>
+SHR 逻辑右移 高位补0 低位CF<br>
+SAL 算术左移 低位补0 高位CF<br>
+SAR 算术右移 高位不变 低位CF<br>
+除法用的时逻辑右移<br>
+对标志的影响</li>
+</ol>
+<ul>
+<li>OF(Overflow Flag) 如果最高位发生变化置1(只进行一次移位)如果进行多次移位OF不确定</li>
+<li>SF(Sign Flag) 最高位为1 SF为1</li>
+<li>ZF(Zero Flag) 结果为0 ZF为1</li>
+<li>PF(Parity Flag) 偶数个1PF为1</li>
+</ul>
+<ol start="2">
+<li>循环移位指令<br>
+循环(Rotate)类似于移位指令 但会将移出的位返回到另一端<br>
+分为带进位和不带进位</li>
+</ol>
+<ul>
+<li>ROL 最高位进入CF和最低位</li>
+<li>ROR 最低位进入CF和最高位</li>
+<li>RCL CF先进入最低位LSB之后最高位MSB进入CF</li>
+<li>RCR CF先进入最高位-MSB之后最低位LSB进入CF</li>
+</ul>
+<h3 id="第四章-汇编程序设计">第四章 汇编程序设计</h3>
+<h4 id="4-1-分支程序结构">4.1 分支程序结构</h4>
+<p>CMP TEST 加减 逻辑运算 对状态标志的影响 进行转移</p>
+<h4 id="4-2-无条件转移">4.2 无条件转移</h4>
+<p>无需检测标志位<br>
+程序代码在代码段</p>
+<ul>
+<li>CS 代码段的段基地址</li>
+<li>EIP 将要执行指令的偏移地址</li>
+</ul>
+<ol>
+<li>转移范围<br>
+段内转移 CS不变</li>
+</ol>
+<p>段间转移</p>
+<ol start="2">
+<li>指令寻址方式<br>
+相对寻址</li>
+</ol>
+<ul>
+<li>相对寻址都是段内转移</li>
+<li>目标地址</li>
+</ul>
+<p>直接寻址</p>
+<ul>
+<li>直接提供目标地址</li>
+<li>目标地址(转移后的CS和EIP)=指令操作数</li>
+</ul>
+<p>间接寻址</p>
+<ul>
+<li>指令代码指示寄存器或存储单元</li>
+</ul>
+<ol start="3">
+<li>指令JMP</li>
+</ol>
+<h5 id="4-1-2-条件转移">4.1.2 条件转移</h5>
+<p>Jcc(Jump on condition code)<br>
+cc就是条件码 16种 分为单个标志和两个标志<br>
+要记cc表<br>
+E equal B below A above<br>
+L less G greater</p>
+<p>编程序时避免分支因为不满足时时顺序执行下一条指令没有大括号和高级语言不同</p>
+<ol>
+<li>单个标志状态作为条件的条件转移指令</li>
+</ol>
+<ul>
+<li>ZF JZ/JE JNZ/JNE 是否为0 为0相等 否则 不等</li>
+<li>SF JS/JNS  正负</li>
+<li>OF JO/JNO  溢出</li>
+<li>PF JP/JPE JNP/JPO   1的个数为偶数(Even) PF为1 奇数(Odd)为0</li>
+<li>CF JC/JNC  进位</li>
+</ul>
+<ol start="2">
+<li>两数大小关系作为条件的条件转移指令</li>
+</ol>
+<p>无符号数大小用高(Above)低(Below)表示</p>
+<ul>
+<li>JB/JNAE</li>
+<li>JNB/JAE</li>
+<li>JBE/JNA</li>
+<li>JNBE/JA</li>
+</ul>
+<p>有符号数大小 用大(Greater)小(Less) 利用OF ZF标志确定</p>
+<ul>
+<li>JL/JNGE</li>
+<li>JNL/JGE</li>
+<li>JNG/JLE</li>
+<li>JG/JNLE</li>
+</ul>
+<p>当有jcc jmp时代表3种分支隐含顺序执行<br>
+这时如果只有两种情况则代表可以删除jmp</p>
+<h4 id="4-2-循环程序">4.2 循环程序</h4>
+<h5 id="4-2-1-循环指令">4.2.1 循环指令</h5>
+<p>LOOP 指令<br>
+使用ECX为寄存器 每执行一次 ecx减一 为0时结束<br>
+即每次使用loop时 先 mov ecx n 循环n次<br>
+LOOP 指令的目标地址采用相对短转移 只能在-128~+127字节间循环<br>
+增加对ZF的检验<br>
+LOOPE/LOOPZ 计数不为0且结果为0 循环<br>
+LOOPNE/LOOPNZ 技术不为0且结果不为0 循环</p>
+<h5 id="4-2-2-计数控制循环">4.2.2 计数控制循环</h5>
+<p>输入字符串</p>
+<h5 id="4-2-3-条件控制循环">4.2.3 条件控制循环</h5>
+<p>借助 jmp 指令和jcc指令</p>
+<h3 id="4-3-子程序指令">4.3 子程序指令</h3>
+<p>子程序和主程序可以在同一个代码段内,也可以在不同段内<br>
+子程序由主程序执行子程序调用CALL来调用而子程序执行完后用子程序返回指令RET返回主程序继续执行<br>
+子程序 会改变EIP和CS转移 但是要保存下一条执行指令的地址 所以先入栈 再出栈<br>
+标号是有偏移地址的<br>
+格式</p>
+<ol>
+<li>调用指令 CALL<br>
+call label 程序转向label标号指向的地址</li>
+<li>子程序返回指令RET<br>
+ret/ret+i16(16位立即数)</li>
+<li>过程定义伪指令<br>
+过程名 PROC<br>
+过程体<br>
+过程名 ENDP<br>
+过程名是唯一的<br>
+返回地址改变时调用EBP+4 即EIP因为没法直接改变</li>
+</ol>
+<h4 id="4-3-3-参数传递">4.3.3 参数传递</h4>
+<p>参数传递可以通过寄存器、变量、堆栈实现 参数可以是数据本身(By Value)也可以是数据的存储地址(By Location)</p>
+<ol>
+<li>
+<p>寄存器传参<br>
+把参数存于约定的寄存器<br>
+带有出口参数的寄存器不能保护和恢复，带有入口参数的寄存器可以保护也可以不保护、但最好保存一致<br>
+有时只使用8位寄存器但保护和恢复应该针对整个32位<br>
+使用低位寄存器后往往不再保证不影响高位部分</p>
+</li>
+<li>
+<p>变量传参<br>
+利用共享变量即子程序和主程序用同一个变量名<br>
+如果变量定义和使用不在同一个模块中,需要利用public和extern声明即其他文件<br>
+如果主程序还需要原来的变量值还需要进行保护和恢复</p>
+</li>
+<li>
+<p>堆栈传参<br>
+使用堆栈 借助EBP基址指针寄存器 ESP堆栈指针寄存器指向栈顶<br>
+出口参数通常不使用堆栈传递</p>
+</li>
+</ol>
+<h4 id="4-4-1-操作系统函数调用">4.4.1 操作系统函数调用</h4>
+<p>静态连接：连接程序从库文件中抽取需要的子程序插入到最终的可执行代码中<br>
+动态连接：程序运行时才将代码加载到主存<br>
+动态连接库：保存程序运行时需要重复使用的代码的文件<br>
+3个最重要的Windows动态连接库<br>
+KERNEL32.DLL：主要处理内存管理和进程调度<br>
+USER32.DLL：主要控制用户界面<br>
+GDI32.DLL：负责图形方面的操作<br>
+导入库（Import Library）：程序开发的连接阶段使用，与一个动态连接库DLL对应</p>
+<p>条件控制伪指令：<br>
+.IF  .ELSEIF  .ELSE  .ENDIF<br>
+流程控制伪指令：<br>
+.WHILE  .ENDW  .REPEAT  .UNTIL<br>
+.REPEAT  .UNTILCXZ  .BREAK  .CONTINUE<br>
+过程声明伪指令PROTO：事先声明过程的结构<br>
+（包括操作系统API函数、高级语言的函数）<br>
+过程名	PROTO	[调用距离] [语言类型]<br>
+[,参数∶[类型]]…<br>
+过程调用伪指令INVOKE：实现过程调用<br>
+INVOKE	过程名[,参数,…]</p>
+<p>程序退出函数<br>
+Win32程序员参考手册<br>
+VOID ExitProcess(<br>
+UINT uExitCode	// exit code for all threads<br>
+);</p>
+<p>汇编语言声明<br>
+ExitProcess PROTO ,:DWORD</p>
+<p>汇编语言调用<br>
+invoke ExitProcess,0<br>
+将函数调用定义成宏<br>
+exit	MACRO dwexitcode<br>
+invoke ExitProcess,dwexitcode<br>
+ENDM</p>
+<h4 id="4-4-2-控制台应用程序">4.4.2 控制台应用程序</h4>
+<p>句柄(Handle)是一个32位无符号整数<br>
+用来唯一确定一个对象<br>
+例如某个输入设备、输出设备或者一个图形<br>
+标准输入句柄<br>
+STD_INPUT_HANDLE = -10<br>
+标准输出句柄<br>
+STD_OUTPUT_HANDLE = -11<br>
+标准错误句柄<br>
+STD_ERROR_HANDLE = -12<br>
+GetStdHandle函数<br>
+获取控制台输入或输出的句柄实例<br>
+用于控制台程序的输入输出操作</p>
+<h4 id="4-4-3-图形窗口应用程序">4.4.3 图形窗口应用程序</h4>
+<p>图像界面 调用API函数<br>
+消息窗口 MessageBox</p>
+<p>int MessageBox{<br>
+HWND hwnd,        //父窗口的句柄<br>
+LPCTSTR lpText,   //要显示字符串的首地址<br>
+LPCTSTR lpCaption,// 消息窗口标题的地址指针 以0结尾<br>
+UINT uType        //类型 MB_OK(=0) MB_OKCANCEL(=1)<br>
+}</p>
+<h3 id="4-5-c-c-混合编程">4.5 C/c++混合编程</h3>
+<p>嵌入汇编 在c/c++语言里面插入汇编<br>
+模块连接 不同语言的程序分别编写形成obj模块文件 然后连接在一起,最终生成可执行文件</p>
+<h4 id="4-5-1-嵌入汇编">4.5.1 嵌入汇编</h4>
+<p>__asm<br>
+{</p>
+<p>}</p>
+<h4 id="4-5-2-模块连接">4.5.2 模块连接</h4>
+<ol>
+<li>采用一致的调用规范</li>
+<li>声明共用函数和变量<br>
+extern</li>
+<li>入口函数和返回函数的约定</li>
+<li>扩展的过程定义</li>
+</ol>
+<h4 id="接口技术">接口技术</h4>
+<h5 id="8253-8254-定时器以实现定时控制接口">8253、8254 定时器以实现定时控制接口</h5>
+<ol>
+<li>
+<p>结构<br>
+3个16位计数器 外部8位<br>
+Gate 高电平有效 因为是与门 低电平一般暂停 重新高 继续计数 重新计数<br>
+CLK 下降沿减一<br>
+out  高或低<br>
+计数器通道 16位预置寄存器 减一计数器 输出锁存器<br>
+A1 A0 部分译码 地址计算 40h-43h 第七章 43h 写控制字 写计数器的工作方式</p>
+</li>
+<li>
+<p>工作方式</p>
+<ul>
+<li>6种 设置步骤 0  3 重要
+<ul>
+<li>设定工作方式 写控制字</li>
+<li>计数初值      写入预置寄存器</li>
+<li>硬件启动 方式1和方式5 即GATE上升沿</li>
+<li>减一计数器</li>
+<li>计数结束<br>
+方式0有n+1个脉冲 下降沿有n个 第一个脉冲没有用 唯一一个out从开始直接变为低电平 结束时变高电平 GAte 重新为高 继续计数 如果计数期间给计数器写入新值 重新计数<br>
+12345 gate是一样的都是 GAte 重新为高 重新计数<br>
+方式1  硬件启动 gate必须有一个上升沿才能启动 所以gate先高后低 out 一开始高 计数时低 计数结束变高<br>
+方式2 频率发生器   out 端计数为1时为低 计算频率<br>
+方式3 方波发生器 计数初值计算 输入频率 一高一低为一个 输入 在2的基础上改进 计数初值送入40h-42h中的一个即clk0-clk2 中的一个<br>
+方式4 计数结束后  out变低<br>
+方式5 硬件启动 计数结束后  out变低</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>编程 注意级联1次</p>
+<ul>
+<li>写入方式控制字 8位 4部分给表 mov al,30h out 43h,al写入控制端口 203h不是16位所以用dx暂存</li>
+<li>写入计数值 计数初值计算 5ms定时器输入频率/输出频率时钟周期=clk的分数 先写入低地址再高  初值为0 65536</li>
+<li>读取计数值</li>
+</ul>
+</li>
+</ol>
+<h4 id="8255-并行接口">8255 并行接口</h4>
+<ol>
+<li>并行数据传输 利用8、16、32数据信号线一次传送一个<strong>字长</strong>的数据w</li>
+<li>工作方式
+<ul>
+<li>方式0 基本5</li>
+<li>方式1 选通输入</li>
+<li>方式2 双向选通</li>
+</ul>
+</li>
+<li>编程
+<ul>
+<li>写入方式控制字</li>
+<li>读写数据端口</li>
+<li>读端口C</li>
+</ul>
+</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>大三</tag>
+        <tag>笔记</tag>
+        <tag>配置命令</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>java高级考试</title>
+    <url>/zh/java/</url>
+    <content><![CDATA[<p>考试</p>
+<a id="more"></a>
+<h2 id="选择20道">选择20道</h2>
+<p>MVC Model 模型 View视图 Controller 控制器</p>
+<p>三层架构分为视图层(View层) 、服务层(Service层) 与 持久层(Dao层) 目的：<br>
+降低系统的耦合度！</p>
+<p>AspectJ是一个基于Java语言的AOP框架<br>
+Aspectj开发方式有2种 基于XML配置开发AspectJ 基于注解开发AspectJ<br>
+使用 <strong>@Aspect</strong> 注解定义一个切面类，由于该类在Spring中是作为组件使用的，所以还需要使用 <strong>@Component</strong>注解。<br>
+使用 <strong>@Pointcut</strong>注解切入点表达式，并通过定义方法来表示切入点名称。<br>
+在每个通知方法上添加相应的注解，并将切入点名称作为参数传递给需要执行增强的通知方法<br>
+@Before(“myPointCut()”) 前置通知<br>
+@AfterReturning 后置返回通知<br>
+@Around 环绕通知<br>
+@AfterThrowing 异常通知<br>
+@After 后置通知</p>
+<p>注解目标类  @Repository(“testDao”)</p>
+<p>Spring jdbcTemplate 的常用方法 是 update和query rowMapper 将结果集映射到用户自定义类中</p>
+<p>编程式事务管理有2种 基于底层API的编程式事务管理 基于TransactionTemplate的编程式事务管理</p>
+<p>声明式事务管理可以通过两种方式来实现 ，一是基于XML的方式，一是基于@Transactional注解的方式</p>
+<p>MyBatis 是一个基于Java的持久层框架 包括SQL Maps和Data<br>
+Access Objects（DAO）</p>
+<p>映射器一般不使用注解完成的原因<br>
+一，面对复杂的SQL会显得无力；二，注解的可读性较差；三，注解丢失了XML上下文相互引用的功能</p>
+<p>在Spring MVC中，最重要的两个注解类型是Controller和RequestMapping</p>
+<p>RequestMapping有方法级别也有类级别的注解value属性是RequestMapping注解的默认属性，如果只有一个value属性，则可以省略该属性。</p>
+<p>数据绑定的含义<br>
+绑定请求参数输入值到领域模型 模型数据到视图的绑定 模型数据到表单元素的绑定</p>
+<p>Spring MVC的拦截器（Interceptor）与Java Servlet的过滤器（Filter）类似，它主要用于拦截用户的请求并做相应的处理。通常应用在权限验证、记录请求信息的日志、判断用<br>
+户是否登录等功能上。</p>
+<p>在Spring MVC框架中，定义一个拦截器，需要对拦截器进行定义和配置。定义一个拦截器可以通过两种方式：<br>
+一种是通过实现HandlerInterceptor接口或继承HandlerInterceptor接口的实现类来定义；<br>
+一种是通过实现WebRequestInterceptor接口或继承WebRequestInterceptor接口的实现类来定义。</p>
+<p>preHandle方法在控制器的处理请求方法前执行</p>
+<p>“postHandle方法在控制器的处理请求方法调用之后，解析视图之前执行”</p>
+<p>“afterCompletion方法在控制器的处理请求方法执行完成后执行，即视图渲染结束之后执行”)</p>
+<h2 id="判断10道">判断10道</h2>
+<p>Spring目的是为了解决企业级应用开发的业务逻辑层和其他各层的耦合问题</p>
+<p>bean的默认作用域是singleton 即容器中只有一个实例<br>
+当作用域是prototype时<br>
+Spring容器每次获取prototype定义的Bean，容器都将创建一个新的Bean实例。</p>
+<p>Spring IoC容器的设计主要是基于<strong>BeanFactory</strong>和<strong>ApplicationContext</strong>两个接口。二者的主要区别在于，如果 Bean 的某一个属性没有注入，则使用 BeanFacotry 加载后，在第一次调用 getBean() 方法时会<strong>抛出异常</strong>，而 ApplicationContext 则在初始化时自检，这样有利于<strong>检查所依赖的属性是否注入。</strong></p>
+<p>构造方法注入 指 IoC 容器使用构造方法注入被依赖的实例。基于构造器的 DI 通过调用带参数的构造方法实现，每个参数代表一个依赖<br>
+Spring框架可以采用Java的<strong>反射机制</strong>，通过构造方法完成<strong>依赖注入</strong></p>
+<p>Bean使用XML装配时使用构造方法注入，需要提供带参数的构造方法</p>
+<p>使用简单的 XML或注解用于配置和原始映射，将接口和Java的 POJOs（Plain Old Java Objects，普通的Java对象）映射成数据库中的记录。</p>
+<p>映射器由一个接口加上XML文件（SQL映射文件）组成</p>
+<p>使用Map不能限定其传递的数据类型</p>
+<p>在开发Spring MVC应用时，需要在web.xml中部署DispatcherServlet</p>
+<p>*“@Controller”表示IndexController的实例是一个控制器<br>
+@Controller相当于@Controller(“indexController”)<br>
+或@Controller(value = “indexController”)</p>
+<p>在控制类中每个请求处理方法可以有多个不同类型的参数，以及一个多种类型的返回结果</p>
+<p>使用@ModelAttribute(“user”)与model.addAttribute(“user”, user)功能相同</p>
+<p>重定向是将用户从当前处理请求定向到另一个视图（例如JSP）或处理请求，以前的请求（request）中存放的信息全部失效，并进入一个新的request作用域；<br>
+转发是将用户对当前处理的请求转发给另一个视图或处理请求，以前的request中存放的信息不会失效。<br>
+转发是服务器行为，重定向是客户端行为。<br>
+控制器类中处理方法的return语句默认就是转发实现，只不过实现的是转发到视图。<br>
+转发到一个请求方法（同一个控制器类里，可省略/index/）<br>
+return “forward:/index/isLogin”;<br>
+重定向到一个请求方法<br>
+return “redirect:/index/isRegister”;<br>
+转发到一个视图<br>
+return “register”;</p>
+<p>Autowired注解类型将依赖注入到一个属性（成<br>
+员变量）或方法，<br>
+在 Spring MVC 中 ， 为了能被作为依赖注入 ， 类必须使用<br>
+@Service注解类型注明为（一个服务）。<br>
+另外，还需要在配置文件中使用&lt;context:component-scan base-package=“基本包”/&gt;元素来扫<br>
+描依赖基本包</p>
+<ol>
+<li>
+<p>Spring中的所有配置信息，都必须配置在一applicationContext.xml中。</p>
+<p>参考答案 : 错</p>
+<p>答案说明 : 可以将配置信息分散到多个配置文件中</p>
+</li>
+<li>
+<p>查询操作也会被程序纳入事务管理范围。</p>
+<p>参考答案 : 错</p>
+<p>答案说明 : 查询操作不需要事务管理</p>
+</li>
+<li>
+<p>@Autowired注解需要标注在Service层的实现类上，这样才能实现依赖注入。</p>
+<p>参考答案 : 错</p>
+<p>答案说明 : 标注在属性上</p>
+</li>
+<li>
+<p>在web.xml中，配置信息&lt; url-pattern&gt;/中的“/”表示拦截除jsp外的所有请求。</p>
+<p>参考答案 : 对</p>
+<p>答案说明 :</p>
+</li>
+<li>
+<p>Spring与Spring MVC，Spring MVC与MyBatis需要相互整合。</p>
+<p>参考答案 : 错</p>
+</li>
+<li>
+<p>Aspect： 允许有多个切点和多个通知组合<br>
+对</p>
+</li>
+<li>
+<p>JDK动态代理是java.lang.reflect.*包提供的方式，它必须借助一个接口才能产生代理对象。因此，对于使用业务接口的类，Spring默认使用JDK动态代理实现AOP,对于没有提供接口的类只能采用CGLIB动态代理<br>
+对</p>
+</li>
+<li>
+<p>MyBatis的核心配置文件的元素节点是有先后顺序的,不可改变<br>
+对</p>
+</li>
+</ol>
+<h2 id="简答5道">简答5道</h2>
+<ol>
+<li>
+<p>Spring的核心容器<br>
+Spring的核心容器是其他模块建立的基础，由Spring-core、Spring-beans、Springcontext、Spring-Context-support和Spring-expression（Spring表达式语言）等模块组成。</p>
+<ul>
+<li>Spring-core模块：提供了框架的基本组成部分，包括控制反转（Inversion of Control，IoC）和依赖注入（Dependency Injection，DI）功能。</li>
+<li>Spring-beans模块：提供了BeanFactory，是工厂模式的一个经典实现，Spring将管理对象称为Bean。</li>
+<li>Spring-context模块：建立在Core和Beans模块基础上，提供一个框架式的对象访问方式，是访问定义和配置的任何对象的媒介。ApplicationContext接口是Context模块的焦点。</li>
+<li>Spring-context-support模块：支持整合第三方库到Spring应用程序上下文，特别是用于高速缓存（EhCache，JCache）和任务调度（CommonJ，Quartz）的支持。</li>
+<li>Spring-expression模块：提供了强大的表达式语言去支持运行时查询和操作对象图。</li>
+</ul>
+</li>
+<li>
+<p>什么是IOC DI 有哪些优点<br>
+控制反转（Inversion of Control，IoC），是Spring框架的核心，用来<strong>消减计算机程序的耦合问题。</strong><br>
+对象的实例不再由调用者创建，而由Spring容器来创建。控制权由调用者转移到容器，控制权发生了反转。<br>
+控制反转是一种通过描述（在Spring中可以是XML或注解）并通过第三方去产生或获取特定对象的方式。在Spring中实现控制反转的是IoC容器，其实现方法是<strong>依赖注入</strong><br>
+依赖注入（Dependency Injection，DI）是IoC的另外一种说法，只是从不同的角度，描述相同的概念。<br>
+从Spring容器角度来看，Spring容器负责将<strong>被依赖对象赋值给调用者的成员变量</strong>，相当于为<strong>调用者注入它所依赖的实例</strong>，这就是Spring的依赖注入</p>
+</li>
+<li>
+<p>Bean的实例化有哪几种常见的方法？</p>
+<ul>
+<li>实例化Bean有三种方式：构造方法实例化、静态工厂实例化和实例工厂实例化（其中，最常用的实例方法是构造方法实例化）</li>
+<li>调用Bean对应类中无参数构造方法来实例化Bean，这种方式称为构造方法实例化</li>
+<li>在工厂类BeanStaticFactory中创建一个静态方法来创建Bean的实例。在配置Bean时,class属性指定静态工厂类，同时使用factory-method属性指定工厂类中的静态方法</li>
+<li>在BeanInstanceFactory工厂类中创建一个实例方法来创建Bean的实例。在配置Bean时使用factory-bean属性指定配置的实例工厂，同时使用factory-method属性指定实例工厂中的实例方法。</li>
+</ul>
+</li>
+<li>
+<p>简述基于注解的装配方式的基本用法。</p>
+<ul>
+<li>@Component。该注解是一个泛化的概念，仅仅表示一个组件对象（Bean），可以作用在任何层次上</li>
+<li>@Repository该注解用于将数据访问层（DAO）的类标识为Bean，即注解*<strong>数据访问层Bean</strong>，其功能与@Component()相同。</li>
+<li>@Service该注解用于标注一个业务逻辑组件类（Service层），其功能与@Component()相同。<strong>表示定义一个bean，自动根据bean的类名实例化一个首写字母为小写的bean。getBean的默认名称是类名（头字母小写），如果想自定义，可以@Service(“aaaaa”) 这样来指定</strong>，这种bean默认是单例的，如果想改变，可以使用@Service(“beanName”)@Scope(“prototype”) 来改变。</li>
+<li>@Controller该注解用于标注一个控制器组件类（Spring MVC的Controller），其功能与@Component()相同。</li>
+<li>@Autowired该注解可以对类成员变量、方法及构造方法进行标注，完成自动装配的工作。<strong>通过@Autowired的使用来消除setter 和getter方法。默认按照Bean的类型进行装配。</strong></li>
+<li>@Resource该注解与@Autowired功能一样。区别在于，该注解<strong>默认是按照名称来装配注入的</strong>，只有当找不到与名称匹配的Bean才会按照类型来装配注入；而@Autowired默认按照Bean的类型进行装配</li>
+<li>@Qualifie与@Autowired注解配合使用。当@Autowired注解需要按照名称来装配注入，则需要结合该注解一起使用，Bean的实例名称由@Qualifier注解的参数指定。</li>
+</ul>
+</li>
+<li>
+<p>@Autowired和＠Resource有什么区别？<br>
+该注解@Autowired功能一样。区别在于，该注解默认是按照名称来装配注入的，只有当找不到与名称匹配的Bean才会按照类型来装配注入；而@Autowired默认按照Bean的类型进行装配，如果想按照名称来装配注入，则需要结合@Qualifier注解一起使用</p>
+</li>
+<li>
+<p>什么是事务管理？<br>
+Spring的声明式事务管理，是通过AOP技术实现的事务管理，其本质是对<code>方法前后进行拦截</code>，然后<strong>在目标方法开始之前创建或者加入一个事务，在执行完目标方法之后根据执行情况提交或者回滚事务</strong>。</p>
+<p>优点是<code>不需要通过编程的方式管理事务</code>，因而不需要在业务逻辑代码中掺杂事务处理的代码，只需相关的事务规则声明，便可以将事务规则应用到业务逻辑中。通常情况下，在开发中使用声明式事务处理，不仅因为其简单，更主要是因为这样使得<code>纯业务代码不被污染，极大方便后期的代码维护</code></p>
+</li>
+<li>
+<p>基于@Transactional注解的声明式事务管理<br>
+当对Service层添加时只能针对public属性范围内的方法添加</p>
+<p>@Transactional注解可以作用于接口、接口方法、类以及类方法上。</p>
+<p>当作用于类上时，该类的所有public方法将都具有该类型的事务属性，同时，也可以在方法级别使用该注解来覆盖类级别的定义。<br>
+虽然@Transactional注解可以作用于接口、接口方法、类以及类方法上，但是Spring小组建议不要在接口或者接口方法上使用该注解，因为这只有在使用基于接口的代理时它才会生效。</p>
+</li>
+<li>
+<p>什么是AOP,AOP的术语有哪些<br>
+AOP(Aspect Oriented Programming)采取横向抽取机制，即将分散在各个方法中的重复代码提取出来，然后在程序编译或运行阶段，再将这些抽取出来的代码应用到需要执行的地方。</p>
+<ul>
+<li>Joinpoint(连接点) 是指那些被拦截到的点，在Spring中，可以被动态代理拦截目标类的方法。</li>
+<li>Pointcut(切入点) 是指要对哪些Joinpoint进行拦截，即被拦截的连接点。</li>
+<li>Advice(通知) ：是指拦截到Joinpoint之后要做的事情，即对切入点增强的内容。 方法级别的增强</li>
+<li>Introduction(引介指的是一种特殊方式的Advice)类级别的增强在原有类上添加一个属性或方法</li>
+<li>Target(目标) 是指代理的目标对象。</li>
+<li>Weaving(织入)是指把增强代码(Advice)应用到目标上，生成代理对象的过程。</li>
+<li>Proxy(代理) 是指生成的代理对象。</li>
+<li>Aspect(切面)是切入点Pointcut和通知的结合</li>
+</ul>
+</li>
+<li>
+<p>简述MyBatis的工作原理即流程</p>
+<ul>
+<li>读取MyBatis配置文件 mybatis-config.xml</li>
+<li>加载映射文件 Mapper1.xml</li>
+<li>构造会话工厂 SqlSessionFactory</li>
+<li>创建会话对象 SqlSession</li>
+<li>Executor 执 行 器</li>
+<li>MappedStatement对象</li>
+<li>输入参数映射 输入参数映射过程类似于JDBC对preparedStatement对象设置参数的过程。</li>
+<li>输出结果映射</li>
+</ul>
+</li>
+<li>
+<p>简述Mybatis与Spring整合过程</p>
+<ul>
+<li>导入相关JAR包</li>
+<li>在Spring中配置MyBatis工厂</li>
+<li>使用Spring管理MyBatis的数据操作接口</li>
+</ul>
+</li>
+<li>
+<p>简述Spring MVC工作原理即流程<br>
+SpringMVC框架主要由DispatcherServlet、处理器映射、控制器、视图解析器、视图组成，SpringMVC的工作流程如下：<br>
+（1）客户端请求提交到DispatcherServlet；<br>
+（2）由DispatcherServlet控制器寻找一个或多个HandlerMapping，找到处理请求的<br>
+Controller；<br>
+（3）DispatcherServlet将请求提交到Controller；<br>
+（4）Controller调用业务逻辑处理后返回ModelAndView；<br>
+（5）DispatcherServlet寻找一个或多个   ViewResolver视图解析器，找到ModelAndView<br>
+指定的视图。<br>
+（6）视图负责将结果显示到客户端。<br>
+<img src="https://i.loli.net/2021/06/02/FuJ6k54Dfi8NSph.png" alt="quicker_667ebf2c-7e1d-4561-8248-47eeba7ca2cd.png"></p>
+</li>
+<li>
+<p>使用基于注解的控制器，具有如下两个优点</p>
+<ul>
+<li>在基于注解的控制器类中，可以编写多个处理方法，进而可以处理多个请求（动作）。这就允许将相关的操作编写在同一个控制器类中，从而减少控制器类的数量，方便以后的维护。</li>
+<li>基于注解的控制器不需要在配置文件中部署映射，仅需要使用RequestMapping注释类型注解一个方法进行请求处理。</li>
+</ul>
+</li>
+<li>
+<p>Controller接受请求参数的常见方式</p>
+<ul>
+<li>通过实体bean接收请求参数 bean的属性名称必须与请求参数名称相同</li>
+<li>通过处理方法的形参接收请求参数 直接把表单参数写在控制器类相应方法的形参中，即形参名称与请求参数名称完全相同。</li>
+<li>通过HttpServletRequest接收请求参数</li>
+<li>通过@PathVariable接收URL中的请求参数</li>
+<li>通过@RequestParam接收请求参数</li>
+<li>通过@ModelAttribute接收请求参数 用于将多个请求参数封装到一个实体对象，从而简化数据绑定流程，而且自动暴露为模型数据用于视图页面展示时使用。</li>
+</ul>
+</li>
+<li>
+<p>简述单个和多个拦截器执行流程<br>
+首先将执行拦截器类中的preHandle()方法，如果该方法返回true，程序将继续执行控制器中处理请求的方法，否<br>
+则中断执行。如果preHandle()方法返回true，并且控制器中处理请求的方法执行后返回视图前，将执行postHandle()方法，然后会通过DispatcherServlet向客户端返回响应。<br>
+在DispatcherServlet处理完请求后，返回视图后，才执行afterCompletion()方法<br>
+多个拦截器同时工作，这时它们的preHandle()方法将按照配置文件中拦截器的配置顺序执行，而它们的postHandle()方法和afterCompletion()方法则按照配置顺序的反序执行。</p>
+</li>
+</ol>
+<h2 id="程序填空3道">程序填空3道</h2>
+<h3 id="依赖注入">依赖注入</h3>
+<pre><code><figure class="highlight"><figcaption><span>xml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">//构造方法，用于实现依赖注入</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">TestDIServiceImpl</span><span class="params">(TestDIDao testDIDao)</span> </span>&#123;</span><br><span class="line"><span class="keyword">super</span>();</span><br><span class="line"><span class="keyword">this</span>.testDIDao = testDIDao;</span><br><span class="line">&#125;</span><br><span class="line">&lt;!-- 将指定类TestDIDaoImpl配置给Spring，让Spring创建其实例 --&gt;</span><br><span class="line">&lt;bean id=<span class="string">&quot;myTestDIDao&quot;</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;dao.TestDIDaoImpl&quot;</span> /&gt;</span><br><span class="line">&lt;!-- 使用构造方法注入 --&gt;</span><br><span class="line">&lt;bean id=<span class="string">&quot;testDIService&quot;</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;service.TestDIServiceImpl&quot;</span>&gt;</span><br><span class="line">&lt;!-- 将myTestDIDao注入到TestDIServiceImpl类的属性 testDIDao上 --&gt;</span><br><span class="line">&lt;constructor-arg index=<span class="string">&quot;0&quot;</span> ref=<span class="string">&quot;myTestDIDao&quot;</span> /&gt;</span><br><span class="line">&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+setter方法注入 指 IoC 容器使用 setter 方法注入被依赖的实例。通过调用无参构造器或无参 static 工厂方法实例化 bean 后，调用该 bean 的 setter 方法，即可实现基于 setter 的 DI。
+
+<figure class="highlight"><figcaption><span>xml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">//添加testDIDao属性的setter方法，用于实现依赖注入</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTestDIDao</span><span class="params">(TestDIDao testDIDao)</span> </span>&#123;</span><br><span class="line"><span class="keyword">this</span>.testDIDao = testDIDao;</span><br><span class="line">&#125;</span><br><span class="line">&lt;!-- 将指定类TestDIDaoImpl配置给Spring，让Spring创建其实例 --&gt;</span><br><span class="line">&lt;bean id=<span class="string">&quot;myTestDIDao&quot;</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;dao.TestDIDaoImpl&quot;</span> /&gt;</span><br><span class="line">&lt;!-- 使用setter方法注入 --&gt;</span><br><span class="line">&lt;bean id=<span class="string">&quot;testDIService1&quot;</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;service.TestDIServiceImpl1&quot;</span>&gt;</span><br><span class="line">&lt;!-- 调用TestDIServiceImpl1类的setter方法，将myTestDIDao注入到 TestDIServiceImpl1类的属性testDIDao上--&gt;</span><br><span class="line">&lt;property name=<span class="string">&quot;testDIDao&quot;</span> ref=<span class="string">&quot;myTestDIDao&quot;</span> /&gt;</span><br><span class="line">&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+</code></pre>
+<h3 id="使用setter方法注入">使用setter方法注入</h3>
+<pre><code>方式装配(提供默认无参数的构造方法，并为注入的属性提供setter方法 )
+如public ComplexUser() &#123;
+super();
+&#125;
+public void setUname(String uname) &#123;
+this.uname = uname;
+&#125;
+在 配置文件中
+
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span> =<span class="string">&quot;user2实例名&quot;</span> <span class="attr">class</span>=<span class="string">&quot;assemble.ComplexUser&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;uname&quot;</span> <span class="attr">value</span>=<span class="string">&quot;chenheng2&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;residenceMap&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">map</span>&gt;</span> map要调用键值对 entry</span><br><span class="line">        <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;shenzhen&quot;</span> <span class="attr">value</span>=<span class="string">&quot;深圳/&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;asds&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">list</span>&gt;</span> set 和 array一样的用法</span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>看书<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+<p>配置注解</p>
+   <!-- 使用context命名空间，通过Spring扫描指定包下所有Bean的实现类，进行注解解析 -->
+<p>&lt;context:component-scan base-package=“annotation.*”/&gt;</p>
+<h3 id="框架整合示例">框架整合示例</h3>
+<pre><code>- 创建应用并导入相关JAR包
+- 创建持久化类 com.po.MyUser
+- 创建SQL映射文件和MyBatis核心配置文件 在该包中创建MyBatis核心配置文件mybatis-config.xml和SQL映射文件UserMapper.xml。
+- 创建数据访问接口 创建一个名为com.dao的包，在该包中创建UserDao接口，**并将接口使用@Mapper注解**为Mapper，接口中的方法与SQL映射文件一致
+- 创建日志文件
+- 创建控制层
+- 创建Spring的配置文件
+- 创建测试类
+
+UserMapper.xml 当方法没有参数时 则不写parameterType属性
+
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;接口名称如com.dao.UserDao&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;接口中的方法名&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;持久化类名如com.po.MyUser&quot;</span>&gt;</span></span><br><span class="line">    select * from user where uid = #&#123;uid&#125;//#&#123;&#125;表示占位符 相当于？ #&#123;uid&#125; 表示该占位符接受参数的名称为uid</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;addUser&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.po.MyUser&quot;</span>&gt;</span></span><br><span class="line">    insert into user (uname,usex) values(#&#123;uname&#125;,#&#123;usex&#125;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">&quot;updateUser&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.po.User&quot;</span>&gt;</span></span><br><span class="line">    update user set uname=#&#123;uname&#125;,usex=#&#123;usex&#125; where uid=#&#123;uid&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br></pre></td></tr></table></figure>
+select 返回结果集 insert update delete 返回整数 影响了数据库的记录行数。
+</code></pre>
+<h3 id="映射器">映射器</h3>
+<p>使用Map接口传递多个参数<br>
+假设数据操作接口中有个实现查询陈姓男性用户信息功能的方法：public List&lt;MyUser&gt; selectAllUser(Map&lt;String, Object&gt; param);</p>
+<pre><code><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">    <span class="comment">&lt;!-- 查询陈姓男性用户信息 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectAllUser&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.po.MyUser&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;map&quot;</span>&gt;</span></span><br><span class="line">select * from user where uname like concat(&#x27;%&#x27;,#&#123;u_name&#125;,&#x27;%&#x27;)and usex = #&#123;u_sex&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+<p>com.comtroller 中UserController代码如下</p>
+<pre><code><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;string, Object&gt; map=<span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">map.put(<span class="string">&quot;u_name&quot;</span>, <span class="string">&quot;陈&quot;</span>);</span><br><span class="line">map.put(<span class="string">&quot;u_sex&quot;</span>,<span class="string">&quot;男&quot;</span>);</span><br><span class="line">List&lt;Myuser&gt; list=userDao.selectAllUser(map);</span><br><span class="line"><span class="keyword">for</span>(MyUser myUser : list)</span><br><span class="line">&#123;</span><br><span class="line">        System.out.println(myUser);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre>
+<p>参数名u_name和u_sex是Map的key。</p>
+<p>使用Java Bean传递多个参数<br>
+首先，创建一个名为com.pojo的包，在包中创建一个POJO类SeletUserParam<br>
+其次，将Dao接口中的selectAllUser方法修改为：public List&lt;MyUser&gt; selectAllUser(SeletUserParam param);<br>
+此时SQL映射文件中parameterType=“com.pojo.SeletUserParam”<br>
+最后，将com.controller包中UserController的“查询多个用户”代码片段修改。</p>
+<pre><code><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">SeletUserParam su = <span class="keyword">new</span> SeletUserParam();</span><br><span class="line">su.setU_name(<span class="string">&quot;王&quot;</span>);</span><br><span class="line">su.setU_sex(<span class="string">&quot;男&quot;</span>);</span><br><span class="line">List&lt;MyUser&gt; list = userDao.selectAllUser(su);</span><br></pre></td></tr></table></figure>
+可以定义SQL语句的一部分重复引用 \&lt;include refid=&quot;&quot;/&gt; 引用
+
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">sql</span> <span class="attr">id</span>=<span class="string">&quot;comColumns&quot;</span>&gt;</span></span><br><span class="line">uid,uname,usex</span><br><span class="line"><span class="tag">&lt;/<span class="name">sql</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectUser&quot;</span> <span class="attr">resultType</span>=</span></span><br><span class="line"><span class="tag">&quot;<span class="attr">com.po.MyUser</span>&quot;&gt;</span></span><br><span class="line">select <span class="tag">&lt;<span class="name">include</span> <span class="attr">refid</span>=<span class="string">&quot;comColumns&quot;</span>/&gt;</span> from user</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+<p>&lt;resultMap&gt;元素 主要用来定义映射规则、<strong>级联</strong>的更新以及定义类型转化器等。<br>
+&lt;resultMap&gt;元素的type属性表示需要的<br>
+POJO，id属性是resultMap的唯一标识。<br>
+子元素&lt;constructor&gt;用于配置构造方法<br>
+(当POJO未定义无参数的构造方法时使<br>
+用)。子元素&lt;id&gt;用于表示哪个列是主键。<br>
+子元素&lt;result&gt;用于表示POJO和数据表<br>
+普通列的映射关系。子元素&lt;association&gt; 、&lt;collection&gt; 和&lt;discriminator&gt;是用在级联的情况下。</p>
+<pre><code><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;&quot;</span> <span class="attr">id</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">constructor</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 类在实例化时，用来注入结果到构造方法 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">idArg</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- ID参数，结果为ID --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">arg</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 注入到构造方法的一个普通结果 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">constructor</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">id</span>/&gt;</span> <span class="comment">&lt;!-- 用于表示哪个列是主键 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">result</span>/&gt;</span> <span class="comment">&lt;!-- 注入到字段或JavaBean属性的普通结果 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span>/&gt;</span> <span class="comment">&lt;!-- 用于一对一关联 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span>/&gt;</span><span class="comment">&lt;!--用于一对多、多对多关联--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">discriminator</span> <span class="attr">javaType</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 使用结果值来决定使用哪个结果映射 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">case</span> <span class="attr">value</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 基于某些值的结果映射 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">discriminator</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+返回结果可以使用Map存储，也可以使用POJO存储。
+Map存储
+
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 查询所有用户信息存到Map中 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectAllUserMap&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;map&quot;</span>&gt;</span></span><br><span class="line">select * from user</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+POJO存储结果集
+创建 POJO 类
+配置\&lt;resultMap&gt;元素
+
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 使用自定义结果集类型 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;com.pojo.MapUser&quot;</span> <span class="attr">id</span>=<span class="string">&quot;myResult&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- property是com.pojo.MapUser类中的属性--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- column是查询结果的列名，可以来自不同的表 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;m_uid&quot;</span> <span class="attr">column</span>=<span class="string">&quot;uid&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 用于表示哪个列是主键 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;m_uname&quot;</span> <span class="attr">column</span>=<span class="string">&quot;uname&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;m_usex&quot;</span> <span class="attr">column</span>=<span class="string">&quot;usex&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+配置\&lt;select&gt;元素
+
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 使用自定义结果集类型查询所有用户 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectResultMap&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;myResult&quot;</span>&gt;</span></span><br><span class="line">select * from user</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+添加接口方法
+public List\&lt;MapUser&gt; selectResultMap();
+</code></pre>
+<h3 id="级联查询">级联查询</h3>
+<p>一对一 idcard 和 person person引用了idcard的主键<br>
+在com.mybatis中创建两张表对应的映射文件IdCardMapper.xml和PersonMapper.xml。在PersonMapper.xml文件中以3种方式实现“根据id查询个人信息”的功能。</p>
+<pre><code><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 一对一 根据id查询个人信息：第一种方法（嵌套查询） --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- type引用POJO类 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;com.po.Person&quot;</span> <span class="attr">id</span>=<span class="string">&quot;cardAndPerson1&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;name&quot;</span> <span class="attr">column</span>=<span class="string">&quot;name&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;age&quot;</span> <span class="attr">column</span>=<span class="string">&quot;age&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 一对一关联查询 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- person表中外键为idcard_id在类中定义为card --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">&quot;card&quot;</span> <span class="attr">column</span>=<span class="string">&quot;idcard_id&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;com.po.Idcard&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">select</span>=<span class="string">&quot;com.dao.IdCardDao.selectCodeById&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- property 指定person里的对象属性column是数据表里对应的字段</span></span><br><span class="line"><span class="comment">    select指定引入嵌套查询的子SQL语句，该属性用于关联映射中的嵌套查询。 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectPersonById1&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;cardAndPerson1&quot;</span>&gt;</span></span><br><span class="line">select * from person where id=#&#123;id&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 一对一 根据id查询个人信息：第二种方法（嵌套结果） --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;com.po.Person&quot;</span> <span class="attr">id</span>=<span class="string">&quot;cardAndPerson2&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;name&quot;</span> <span class="attr">column</span>=<span class="string">&quot;name&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;age&quot;</span> <span class="attr">column</span>=<span class="string">&quot;age&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 一对一关联查询 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">&quot;card&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;com.po.Idcard&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;idcard_id&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;code&quot;</span> <span class="attr">column</span>=<span class="string">&quot;code&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">association</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectPersonById2&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;cardAndPerson2&quot;</span>&gt;</span></span><br><span class="line">select p.*,ic.code</span><br><span class="line">from person p, idcard ic</span><br><span class="line">where p.idcard_id = ic.id and p.id=#&#123;id&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 一对一 根据id查询个人信息：第三种方法（使用POJO存储结果） --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectPersonById3&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.pojo.SelectPersonById&quot;</span>&gt;</span></span><br><span class="line">select p.*,ic.code</span><br><span class="line">from person p, idcard ic</span><br><span class="line">where p.idcard_id = ic.id and p.id=#&#123;id&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</code></pre>
+<p>一对多 一个用户多个订单<br>
+多对多 中间表orders_detail不需要持久化类，但需要在订单表orders对应的持久化类Orders中添加关联属性。</p>
+<pre><code><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 一对多 根据uid查询用户及其关联的订单信息：第一种方法（嵌套查询） --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;com.po.MyUser&quot;</span> <span class="attr">id</span>=<span class="string">&quot;userAndOrders1&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;uid&quot;</span> <span class="attr">column</span>=<span class="string">&quot;uid&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 用于表示哪个列是主键 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;uname&quot;</span> <span class="attr">column</span>=<span class="string">&quot;uname&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;usex&quot;</span> <span class="attr">column</span>=<span class="string">&quot;usex&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 一对多关联查询，ofType表示集合中的元素类型，将uid传递给selectOrdersById--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;ordersList&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;com.po.Orders&quot;</span> <span class="attr">column</span>=<span class="string">&quot;uid&quot;</span> </span></span><br><span class="line"><span class="tag">    <span class="attr">select</span>=<span class="string">&quot;com.dao.OrdersDao.selectOrdersById&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectUserOrdersById1&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;userAndOrders1&quot;</span>&gt;</span></span><br><span class="line">select * from user where uid = #&#123;id&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 一对多关联查询，ofType表示集合中的元素类型 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;ordersList&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;com.po.Orders&quot;</span> &gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;ordersn&quot;</span> <span class="attr">column</span>=<span class="string">&quot;ordersn&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectUserOrdersById2&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;userAndOrders2&quot;</span>&gt;</span></span><br><span class="line">select u.*,o.id,o.ordersn from user u, orders o where u.uid = o.user_id and u.uid=#&#123;id&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 多对多关联 查询所有订单以及每个订单对应的商品信息（嵌套结果） --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;com.po.Orders&quot;</span> <span class="attr">id</span>=<span class="string">&quot;allOrdersAndProducts&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;ordersn&quot;</span> <span class="attr">column</span>=<span class="string">&quot;ordersn&quot;</span>/&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 多对多关联 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;products&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;com.po.Product&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;pid&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;name&quot;</span> <span class="attr">column</span>=<span class="string">&quot;name&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;price&quot;</span> <span class="attr">column</span>=<span class="string">&quot;price&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectallOrdersAndProducts&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;allOrdersAndProducts&quot;</span>&gt;</span></span><br><span class="line">select o.*,p.id as pid,p.name,p.price</span><br><span class="line">from orders o,orders_detail od,product p</span><br><span class="line">where od.orders_id = o.id </span><br><span class="line">and od.product_id = p.id</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+<h3 id="动态sql">动态SQL</h3>
+   <!-- 使用if元素，根据条件动态查询用户信息 -->
+<pre><code><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectUserByIf&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.po.MyUser&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.po.MyUser&quot;</span>&gt;</span></span><br><span class="line">    select * from user where 1=1</span><br><span class="line"><span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;uname !=null and uname!=&#x27;&#x27;&quot;</span>&gt;</span></span><br><span class="line">    and uname like concat(&#x27;%&#x27;,#&#123;uname&#125;,&#x27;%&#x27;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;usex !=null and usex!=&#x27;&#x27;&quot;</span>&gt;</span></span><br><span class="line">    and usex = #&#123;usex&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 使用choose、when、otherwise元素，根据条件动态查询用户信息 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectUserByChoose&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.po.MyUser&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.po.MyUser&quot;</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">    select * from user where 1=1</span><br><span class="line">    <span class="tag">&lt;<span class="name">choose</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">when</span> <span class="attr">test</span>=<span class="string">&quot;uname !=null and uname!=&#x27;&#x27;&quot;</span>&gt;</span></span><br><span class="line">            and uname like concat(&#x27;%&#x27;,#&#123;uname&#125;,&#x27;%&#x27;)</span><br><span class="line">        <span class="tag">&lt;/<span class="name">when</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">when</span> <span class="attr">test</span>=<span class="string">&quot;usex !=null and usex!=&#x27;&#x27;&quot;</span>&gt;</span></span><br><span class="line">            and usex = #&#123;usex&#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">when</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">otherwise</span>&gt;</span></span><br><span class="line">            and uid &gt; 10</span><br><span class="line">        <span class="tag">&lt;/<span class="name">otherwise</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">choose</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">foreach</span>&gt;</span>元素主要用在构建in条件中，它可以在SQL语句中进行迭代一个集合</span><br><span class="line">foreach元素的属性主要有item，index，collection，open，separator，close。</span><br><span class="line">item表示集合中每一个元素进行迭代时的别名，</span><br><span class="line">index指定一个名字，用于表示在迭代过程中，每次迭代到的位置，</span><br><span class="line">open表示该语句以什么开始，</span><br><span class="line">separator表示在每次进行迭代之间以什么符号作为分隔符，close表示以什么结束。</span><br><span class="line">如果传入的是单参数且参数类型是一个List的时候，collection属性值为list。</span><br><span class="line">如果传入的是单参数且参数类型是一个array数组的时候，collection的属性值为array。</span><br><span class="line">如果传入的参数是多个时，需要把它们封装成一个Map，当然单参数也可以封装成Map</span><br><span class="line"></span><br><span class="line">使用bind元素进行模糊查询</span><br></pre></td></tr></table></figure>
+</code></pre>
+<h3 id="视图解析器">视图解析器</h3>
+<pre><code>用户可以在配置文件中定义SpringMVC的一个视图解析器（ViewResolver），配置前缀和后缀两个属性，RegisterController和LoginController控制器类的视图路径仅需提供register和login，视图解析器将会自动添加前缀和后缀
+
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 前缀 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;prefix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;/WEB-INF/jsp/&quot;</span> /&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 后缀 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;suffix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;.jsp&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+<h3 id="controller获取请求参数">Controller获取请求参数</h3>
+<pre><code><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">  <span class="comment">/*通过HttpServletRequest接收请求参数  */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">register</span><span class="params">(HttpServletRequest request, Model model)</span> </span>&#123;String uname = request.getParameter(<span class="string">&quot;uname&quot;</span>);/</span><br><span class="line">  <span class="comment">/*通过@PathVariable获取URL中的参数 必须加method属性*/</span></span><br><span class="line"><span class="meta">@RequestMapping(value=&quot;/register/&#123;uname&#125;/&#123;upass&#125;&quot;, method=RequestMethod.GET)</span></span><br><span class="line"> </span><br><span class="line"> <span class="function"><span class="keyword">public</span> String <span class="title">register</span><span class="params">(<span class="meta">@PathVariable</span> String uname,<span class="meta">@PathVariable</span> String upass,Model model)</span> </span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"> <span class="comment">/* 通过@RequestParam接收请求参数 */</span></span></span><br><span class="line"><span class="function"> <span class="title">register</span><span class="params">(<span class="meta">@RequestParam</span> String uname, <span class="meta">@RequestParam</span> String upass,</span></span></span><br><span class="line"><span class="function"><span class="params"> <span class="comment">/* 当请求参数与接收参数名不一致时，“通过处理方法的形参接收请求参数”不会报404错误，而“通过@RequestParam接收请求参数”会404错误。 */</span></span></span></span><br></pre></td></tr></table></figure>
+</code></pre>
+<h3 id="modelattribute">@ModelAttribute</h3>
+<pre><code>- 绑定请求参数到实体对象（表单的命令对象）
+    在上述代码中“@ModelAttribute（&quot;user&quot;）UserFormuser”语句的功能有两个：
+    一是将请求参数的输入封装到user对象中；
+    二是创建UserForm实例，以“user”为键值存储在Model对象中，和“model.addAttribute（&quot;user&quot;，
+    user）”语句的功能一样。如果没有指定键值，即“@ModelAttributeUserFormuser”，那么在创建
+    UserForm 实 例 时 以 “ userForm” 为 键 值 存 储 在 Model 对象中 ， 和 “ model.addAttribute
+    （&quot;userForm&quot;,user）”语句的功能一样。
+    @RequestMapping(&quot;/register&quot;)
+    public String register(@ModelAttribute(&quot;user&quot;) UserForm user)
+- 注解一个非请求处理方法
+    被@ModelAttribute注解的方法将在每次调用该控制器类的请求处理方法前被调用。这种特性可以用来控制登录权限
+
+    <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseController</span></span>&#123;</span><br><span class="line"><span class="meta">@ModelAttribute</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">isLogin</span><span class="params">(HttpSession session)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"><span class="keyword">if</span>(session.getAttribute(<span class="string">&quot;user&quot;</span>)==<span class="keyword">null</span>)&#123;</span><br><span class="line"><span class="function"><span class="keyword">throws</span> new <span class="title">Exception</span><span class="params">(<span class="string">&quot;没有权限！&quot;</span>)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    在上述ModelAttributeController类中的add、update、delete请求处理方法执行时，首先执行父类BaseController中的isLogin方法判断登录权限。
+</code></pre>
+<h3 id="表单标签库">表单标签库</h3>
+<pre><code>&lt;!-- modelAttribute：暴露form backing object的模型属性名称，默认为command，属性值绑定一个JavaBean对象 --&gt;
+&lt;form:form modelAttribute=&quot;xxx&quot; method=&quot;post&quot; action=&quot;xxx&quot;&gt;
+……
+&lt;/form:form&gt;
+&lt;form:input path=&quot;xxx&quot;/&gt;
+path属性将文本框输入值绑定到form backing object的一个属性
+select标签的选项可能来自其属性items指定的集合，或者来自一个嵌套的option标签或options标签
+&lt;form:select path=&quot;xxx&quot;&gt;
+    &lt;form:options items=&quot;xxx&quot;/&gt;
+&lt;/form:select&gt;
+</code></pre>
+<h3 id="拦截器的配置">拦截器的配置</h3>
+<pre><code><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置拦截器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:interceptors</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置一个全局拦截器，拦截所有请求 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;interceptor.TestInterceptor&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置拦截器作用的路径 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">&quot;/**&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- /** 拦截所有路径 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置不需要拦截作用的路径 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:exclude-mapping</span> <span class="attr">path</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 定义在&lt;mvc:interceptor&gt;元素中，表示匹配指定路径的请求才进行拦截 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;interceptor.Interceptor1&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置拦截器作用的路径 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">&quot;/gotoTest&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 定义在&lt;mvc:interceptor&gt;元素中，表示匹配指定路径的请求才进行拦截即拦截所有以gotoTest结尾的路径 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;interceptor.Interceptor2&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptors</span>&gt;</span></span><br><span class="line">注意：<span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span>中的子元素必须按照上述代码中的配置顺序边写，即<span class="tag">&lt;<span class="name">mvc:mapping</span>&gt;</span>&lt;mvc:excludemapping&gt;<span class="tag">&lt;<span class="name">bean</span>&gt;</span>,否则文件会报错</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginInterceptor</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span></span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandl</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span></span></span><br><span class="line"><span class="function"><span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"><span class="comment">//获取请求的URL</span></span><br><span class="line">String url = request.getRequestURI();</span><br><span class="line"><span class="comment">//login.jsp或登录请求放行，不拦截</span></span><br><span class="line"><span class="keyword">if</span>(url.indexOf(<span class="string">&quot;/toLogin&quot;</span>) &gt;= <span class="number">0</span> || url.indexOf(<span class="string">&quot;/login&quot;</span>) &gt;= <span class="number">0</span>) &#123;</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//获取Session</span></span><br><span class="line">HttpSession session = request.getSession();</span><br><span class="line">Object obj = session.getAttribute(<span class="string">&quot;user&quot;</span>);</span><br><span class="line"><span class="keyword">if</span>(obj != <span class="keyword">null</span>)</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line"><span class="comment">//没有登录且不是登录页面，转发到登录页面，并给出提示错误信息</span></span><br><span class="line">request.setAttribute(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;还没登录，请先登录！&quot;</span>);</span><br><span class="line">request.getRequestDispatcher(<span class="string">&quot;/WEB-INF/jsp/login.jsp&quot;</span>).forward(request, response);</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre>
+<h3 id="el与jstl">EL与JSTL</h3>
+<h4 id="el">EL</h4>
+<p>${user.age}==<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mi>s</mi><mi>e</mi><mi>r</mi><mo stretchy="false">[</mo><mi mathvariant="normal">&quot;</mi><mi>a</mi><mi>g</mi><mi>e</mi><mi mathvariant="normal">&quot;</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">{user[&quot;age&quot;]}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">u</span><span class="mord mathdefault">s</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mopen">[</span><span class="mord">&quot;</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault">e</span><span class="mord">&quot;</span><span class="mclose">]</span></span></span></span></span>{array[0]}<br>
+${empty A} 如果A为null返回true</p>
+<p>与作用范围相关隐含对象 pageScope requestScope sessionScope applicationScope<br>
+获取数据： ${EL隐含对象.关键字对象.属性}或${EL隐含对象.关键字对象}</p>
+<p>与请求参数相关隐含对象param以及paramValues<br>
+获取数据： ${EL隐含对象.参数名}</p>
+<h4 id="jstl">JSTL</h4>
+<p>使用taglib标记定义前缀与引用</p>
+<p>&lt;c:out value=&quot;&quot;&gt; 显示数据<br>
+&lt;c:set value=&quot;&quot; &gt; 设置作用域变量 设置JavaBean属性<br>
+&lt;c:remove&gt;</p>
+<p>函数标签库</p>
+<p>${fn:indexof(string,substring)} 返回子字符串在某个字符串第一次出现时的索引</p>
+]]></content>
+      <tags>
+        <tag>大三</tag>
+        <tag>考试</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+</search>
