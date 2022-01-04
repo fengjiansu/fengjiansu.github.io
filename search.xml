@@ -84,98 +84,56 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">fengjiansu:x:1000:1000:/home/fengjiansu:/bin/bash</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
   </entry>
   <entry>
-    <title>微机上机教程</title>
-    <url>/zh/micro-computer/</url>
-    <content><![CDATA[<p>上机</p>
+    <title>微机考试</title>
+    <url>/zh/microcomputer-exam/</url>
+    <content><![CDATA[<p>考试</p>
 <a id="more"></a>
-<p>Dfh 不对 0dfh 可以<br>
-宏汇编定义在inc文件中</p>
-<h3 id="子程序和lib库">子程序和lib库</h3>
-<p>子程序名即过程名</p>
+<h2 id="10章-8253-8255">10章 8253 8255</h2>
+<h3 id="8253">8253</h3>
 <ul>
-<li>
-<p>主程序中</p>
-  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.data前要 extern 子程序名:near</span><br><span class="line">调用时 call 子程序名</span><br></pre></td></tr></table></figure>
-</li>
+<li>读表写控制字 读写格式随便？可以直接用2进制 如 mov al,00010000B</li>
+<li>方波等于方式3</li>
+<li>初值计算要注意 N=fclk/fout=fclk*tout=tout/tclk</li>
+<li>字母开头的16进制数开头要加0 如 mov al,0b6h<br>
+程序初始化时要加上过程定义</li>
+<li>count0 proc<br>
+ret<br>
+count0 endp</li>
+<li>按BCD码计数时的不同 例如初值4000  BCD码有两种方式 mov ax,4000h mov al,00 out dx,al mov al,40 out dx,al</li>
 </ul>
-<p>且子程序要写在主程序 invoke ExitProcess,0之后<br>
-main ENDP 之前此时子程序只以子程序名 ENDP结尾</p>
-<ul>
-<li>
-<p>子程序中</p>
-  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.data前 public 子程序名</span><br><span class="line">.code后</span><br><span class="line">子程序名 PROC c</span><br><span class="line">ret</span><br><span class="line">子程序名 ENDP</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>创建lib库</p>
-<ul>
-<li>创建新项目 静态库</li>
-<li>生成自定义文件masm</li>
-<li>在源文件中添加子程序文件生成解决方案</li>
-<li>找到生成的lib文件复制到要调用库文件的函数中去</li>
-</ul>
-<p>编译cpp时出错 项目属性 链接器高级入口点处的值删除(之前设为main)</p>
-<h3 id="程序模块">程序模块</h3>
-<h4 id="子程序模块">子程序模块</h4>
-<p>子程序单独编写，汇编形成目标模块OBJ文件<br>
-连接时输入子程序模块文件名<br>
-用共用伪指令PUBLIC和外部伪指令EXTERN声明<br>
-PUBLIC 标识符 [,标识符 …]<br>
-;定义标识符的模块使用<br>
-EXTERN 标识符:类型 [,标识符:类型 …]<br>
-;调用标识符的模块使用</p>
-<h4 id="子程序库">子程序库</h4>
-<p>统一管理子程序模块<br>
-使用子程序库：在连接主程序模块时提供子程序库文件名<br>
-子程序文件编写完成、汇编形成目标模块<br>
-VS201X环境中编译生成.obj文件<br>
-利用库管理工具程序LIB.EXE：把子程序模块逐个加入到子程序库（.LIB）</p>
-<h4 id="库文件包含">库文件包含</h4>
-<p>直接在主程序源文件中用库文件包含伪指令INCLUDELIB说明<br>
-不用在连接时输入库文件名</p>
-<h4 id="宏汇编">宏汇编</h4>
-<p>宏（Macro）：具有宏名的一段汇编语句序列<br>
-宏需要先定义<br>
-宏名	MACRO 形参表<br>
-……	;宏定义体<br>
-ENDM<br>
-然后程序中进行宏调用<br>
-宏名 实体参数<br>
-在汇编时，宏指令被汇编程序用宏定义的代码序列替代，实现宏展开</p>
-<h4 id="源文件包含">源文件包含</h4>
-<p>将INCLUDE伪指令指定的文本文件内容插入源程序<br>
-可以包含任何文本文件<br>
-一些常用的或有价值的宏定义存放在.MAC宏定义文件<br>
-各种常量定义、声明语句等组织在.INC包含文件<br>
-常用的子程序形成.ASM汇编语言源文件<br>
-利用INCLUDE伪指令包含其他文件，其实质仍然是一个源程序，只不过是分在了几个文件书写</p>
-<h3 id="模块连接">模块连接</h3>
-<p>各种语言的程序分别编写<br>
-利用各自的开发环境编译形成OBJ模块文件<br>
-将它们连接在一起，生成可执行文件<br>
-为了保证正确连接<br>
-采用一致的调用规范 如c<br>
-声明共用函数和变量<br>
-正确传递入口参数和返回参数<br>
-使用MASM的扩展过程定义</p>
-<p>cpp 里 extern “C” { long mean(long d[], long num); }</p>
-<p>asm文件<br>
-mean	proto d:ptr dword,num:dword ; 过程声明</p>
-<p>mean	proc USES ebx ecx edx,d:ptr dword,num:dword ; 过程定义</p>
-<p>点击编译生成obj文件 在工程目录下的debug文件夹下找到文件<br>
-放在和cpp文件同级目录下<br>
-注意两个文件命名不能相同否则obj文件会混合在一起编译失败</p>
-<h3 id="调用api函数">调用API函数</h3>
-<p>MessageBoxA PROTO :DWORD,:DWORD,:DWORD,:DWORD<br>
-MessageBox equ <MessageBoxA><br>
-NULL	equ 0<br>
-MB_YESNOCANCEL	equ 3<br>
-MB_OK equ 0<br>
-MB_ICONWARNING equ 48<br>
-参数相加 例如 欧取消为3 感叹号是48则 48+3=51为感叹号加取消按钮</p>
+]]></content>
+      <tags>
+        <tag>router</tag>
+        <tag>大三</tag>
+        <tag>考试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网络协议分析实验报告</title>
+    <url>/zh/internet-protocol-lab/</url>
+    <content><![CDATA[<h2 id="arp地址解析协议">ARP地址解析协议</h2>
+<p>在网络层和链路层接口的一部分运行<br>
+ARP是地址解析协议,用于实现IP地址到MAC地址的映射</p>
+<p>过程<br>
+1、 PC1想发送数据到PC2，首先检测本地缓存ARP缓存表和PC2IP匹配的MAC。<br>
+2、如果没有找到此条目，那么PC1将广播一个ARP请求帧到本地网络的所有主机。本地网络上每台主机都接受ARP请求检查是否和自己IP地址匹配。如果不匹配，丢弃该ARP请求。<br>
+3、找到和PC2IP匹配的MAC，PC2首先将PC1的IP和MAC存入PC2的ARP缓存表，然后PC2将包含其MAC地址的ARP应答报文单播到PC1上。<br>
+4、PC1收到报文，将PC2 IP和MAC存入自己ARP缓存表<br>
+5、由此PC1和PC2可以正常通信，ARP作用到此结束。</p>
+<p>Hardware type ：占2字节，硬件类型，标识链路层协议。以太网（Ethernet）是1<br>
+Protocol type： 占2字节，协议类型，标识网络层协。IPv4是0x0800。<br>
+Hardware size ：占1字节，硬件地址大小，标识MAC地址长度，这里是6个字节（48bit）。<br>
+Protocol size： 占1字节，协议地址大小，标识IP地址长度，这里是4个字节（32bit）。<br>
+Opcode： 占2字节，操作代码，标识ARP数据包类型，1表示请求，2表示回应。<br>
+Sender MAC address ：占6字节，发送者MAC。<br>
+Sender IP address ：占4字节，发送者IP。<br>
+Target MAC address ：占6字节，目标MAC，此处全0表示在请求。<br>
+Target IP address： 占4字节，目标IP。</p>
 ]]></content>
       <tags>
         <tag>大三</tag>
-        <tag>上机教程</tag>
+        <tag>intetnet protocol</tag>
+        <tag>报告</tag>
       </tags>
   </entry>
   <entry>
@@ -309,56 +267,98 @@ B的成长空间(N-1)</p>
       </tags>
   </entry>
   <entry>
-    <title>网络协议分析实验报告</title>
-    <url>/zh/internet-protocol-lab/</url>
-    <content><![CDATA[<h2 id="arp地址解析协议">ARP地址解析协议</h2>
-<p>在网络层和链路层接口的一部分运行<br>
-ARP是地址解析协议,用于实现IP地址到MAC地址的映射</p>
-<p>过程<br>
-1、 PC1想发送数据到PC2，首先检测本地缓存ARP缓存表和PC2IP匹配的MAC。<br>
-2、如果没有找到此条目，那么PC1将广播一个ARP请求帧到本地网络的所有主机。本地网络上每台主机都接受ARP请求检查是否和自己IP地址匹配。如果不匹配，丢弃该ARP请求。<br>
-3、找到和PC2IP匹配的MAC，PC2首先将PC1的IP和MAC存入PC2的ARP缓存表，然后PC2将包含其MAC地址的ARP应答报文单播到PC1上。<br>
-4、PC1收到报文，将PC2 IP和MAC存入自己ARP缓存表<br>
-5、由此PC1和PC2可以正常通信，ARP作用到此结束。</p>
-<p>Hardware type ：占2字节，硬件类型，标识链路层协议。以太网（Ethernet）是1<br>
-Protocol type： 占2字节，协议类型，标识网络层协。IPv4是0x0800。<br>
-Hardware size ：占1字节，硬件地址大小，标识MAC地址长度，这里是6个字节（48bit）。<br>
-Protocol size： 占1字节，协议地址大小，标识IP地址长度，这里是4个字节（32bit）。<br>
-Opcode： 占2字节，操作代码，标识ARP数据包类型，1表示请求，2表示回应。<br>
-Sender MAC address ：占6字节，发送者MAC。<br>
-Sender IP address ：占4字节，发送者IP。<br>
-Target MAC address ：占6字节，目标MAC，此处全0表示在请求。<br>
-Target IP address： 占4字节，目标IP。</p>
-]]></content>
-      <tags>
-        <tag>大三</tag>
-        <tag>intetnet protocol</tag>
-        <tag>报告</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>微机考试</title>
-    <url>/zh/microcomputer-exam/</url>
-    <content><![CDATA[<p>考试</p>
+    <title>微机上机教程</title>
+    <url>/zh/micro-computer/</url>
+    <content><![CDATA[<p>上机</p>
 <a id="more"></a>
-<h2 id="10章-8253-8255">10章 8253 8255</h2>
-<h3 id="8253">8253</h3>
+<p>Dfh 不对 0dfh 可以<br>
+宏汇编定义在inc文件中</p>
+<h3 id="子程序和lib库">子程序和lib库</h3>
+<p>子程序名即过程名</p>
 <ul>
-<li>读表写控制字 读写格式随便？可以直接用2进制 如 mov al,00010000B</li>
-<li>方波等于方式3</li>
-<li>初值计算要注意 N=fclk/fout=fclk*tout=tout/tclk</li>
-<li>字母开头的16进制数开头要加0 如 mov al,0b6h<br>
-程序初始化时要加上过程定义</li>
-<li>count0 proc<br>
-ret<br>
-count0 endp</li>
-<li>按BCD码计数时的不同 例如初值4000  BCD码有两种方式 mov ax,4000h mov al,00 out dx,al mov al,40 out dx,al</li>
+<li>
+<p>主程序中</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.data前要 extern 子程序名:near</span><br><span class="line">调用时 call 子程序名</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
+<p>且子程序要写在主程序 invoke ExitProcess,0之后<br>
+main ENDP 之前此时子程序只以子程序名 ENDP结尾</p>
+<ul>
+<li>
+<p>子程序中</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.data前 public 子程序名</span><br><span class="line">.code后</span><br><span class="line">子程序名 PROC c</span><br><span class="line">ret</span><br><span class="line">子程序名 ENDP</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>创建lib库</p>
+<ul>
+<li>创建新项目 静态库</li>
+<li>生成自定义文件masm</li>
+<li>在源文件中添加子程序文件生成解决方案</li>
+<li>找到生成的lib文件复制到要调用库文件的函数中去</li>
+</ul>
+<p>编译cpp时出错 项目属性 链接器高级入口点处的值删除(之前设为main)</p>
+<h3 id="程序模块">程序模块</h3>
+<h4 id="子程序模块">子程序模块</h4>
+<p>子程序单独编写，汇编形成目标模块OBJ文件<br>
+连接时输入子程序模块文件名<br>
+用共用伪指令PUBLIC和外部伪指令EXTERN声明<br>
+PUBLIC 标识符 [,标识符 …]<br>
+;定义标识符的模块使用<br>
+EXTERN 标识符:类型 [,标识符:类型 …]<br>
+;调用标识符的模块使用</p>
+<h4 id="子程序库">子程序库</h4>
+<p>统一管理子程序模块<br>
+使用子程序库：在连接主程序模块时提供子程序库文件名<br>
+子程序文件编写完成、汇编形成目标模块<br>
+VS201X环境中编译生成.obj文件<br>
+利用库管理工具程序LIB.EXE：把子程序模块逐个加入到子程序库（.LIB）</p>
+<h4 id="库文件包含">库文件包含</h4>
+<p>直接在主程序源文件中用库文件包含伪指令INCLUDELIB说明<br>
+不用在连接时输入库文件名</p>
+<h4 id="宏汇编">宏汇编</h4>
+<p>宏（Macro）：具有宏名的一段汇编语句序列<br>
+宏需要先定义<br>
+宏名	MACRO 形参表<br>
+……	;宏定义体<br>
+ENDM<br>
+然后程序中进行宏调用<br>
+宏名 实体参数<br>
+在汇编时，宏指令被汇编程序用宏定义的代码序列替代，实现宏展开</p>
+<h4 id="源文件包含">源文件包含</h4>
+<p>将INCLUDE伪指令指定的文本文件内容插入源程序<br>
+可以包含任何文本文件<br>
+一些常用的或有价值的宏定义存放在.MAC宏定义文件<br>
+各种常量定义、声明语句等组织在.INC包含文件<br>
+常用的子程序形成.ASM汇编语言源文件<br>
+利用INCLUDE伪指令包含其他文件，其实质仍然是一个源程序，只不过是分在了几个文件书写</p>
+<h3 id="模块连接">模块连接</h3>
+<p>各种语言的程序分别编写<br>
+利用各自的开发环境编译形成OBJ模块文件<br>
+将它们连接在一起，生成可执行文件<br>
+为了保证正确连接<br>
+采用一致的调用规范 如c<br>
+声明共用函数和变量<br>
+正确传递入口参数和返回参数<br>
+使用MASM的扩展过程定义</p>
+<p>cpp 里 extern “C” { long mean(long d[], long num); }</p>
+<p>asm文件<br>
+mean	proto d:ptr dword,num:dword ; 过程声明</p>
+<p>mean	proc USES ebx ecx edx,d:ptr dword,num:dword ; 过程定义</p>
+<p>点击编译生成obj文件 在工程目录下的debug文件夹下找到文件<br>
+放在和cpp文件同级目录下<br>
+注意两个文件命名不能相同否则obj文件会混合在一起编译失败</p>
+<h3 id="调用api函数">调用API函数</h3>
+<p>MessageBoxA PROTO :DWORD,:DWORD,:DWORD,:DWORD<br>
+MessageBox equ <MessageBoxA><br>
+NULL	equ 0<br>
+MB_YESNOCANCEL	equ 3<br>
+MB_OK equ 0<br>
+MB_ICONWARNING equ 48<br>
+参数相加 例如 欧取消为3 感叹号是48则 48+3=51为感叹号加取消按钮</p>
 ]]></content>
       <tags>
         <tag>大三</tag>
-        <tag>考试</tag>
-        <tag>router</tag>
+        <tag>上机教程</tag>
       </tags>
   </entry>
   <entry>
