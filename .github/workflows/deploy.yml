@@ -35,7 +35,15 @@ jobs:
           git config --global user.email 'c2306547791@gmail.com'
 
       - name: Deploy Hexo
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
+          mkdir -p ~/.ssh
+          echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git config --global user.name 'YOUR_GITHUB_USERNAME'
+          git config --global user.email 'YOUR_GITHUB_EMAIL'
           npx hexo clean
           npx hexo generate
           npx hexo deploy
