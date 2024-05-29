@@ -116,7 +116,7 @@ theme: ayer
 deploy:
   type: git
   repository: git@github.com:fengjiansu/fengjiansu.github.io.git  #例如我的：repository: git@github.com:Leafney/Leafney.github.io.git
-  branch: main
+  branch: gh-pages
   
 
 
