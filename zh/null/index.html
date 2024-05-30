@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengjiansu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="借助github action实现自动化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用python实现天气预报助手">
+<meta property="og:url" content="https://fengjiansu.github.io/zh/null/index.html">
+<meta property="og:site_name" content="风间宿的博客">
+<meta property="og:description" content="借助github action实现自动化">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-11T13:18:02.000Z">
+<meta property="article:modified_time" content="2024-05-30T14:10:54.616Z">
+<meta property="article:author" content="风间宿">
+<meta property="article:tag" content="vscode">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="Github Action">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://fengjiansu.github.io/zh/null/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://fengjiansu.github.io/zh/null/","path":"zh/null/","title":"用python实现天气预报助手"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>用python实现天气预报助手 | 风间宿的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="风间宿的博客" type="application/atom+xml">
+<link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">风间宿的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">攀那一阶一阶，看那一景一景</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%A4%A9%E6%B0%94"><span class="nav-number">3.1.</span> <span class="nav-text">获取天气</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E9%9C%80%E8%A6%81%E5%8F%91%E9%80%81"><span class="nav-number">3.2.</span> <span class="nav-text">判断是否需要发送</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E9%80%81%E4%BF%A1%E6%81%AF"><span class="nav-number">3.3.</span> <span class="nav-text">发送信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%91%E9%82%AE%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">发邮件</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">风间宿</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fengjiansu.github.io/zh/null/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="风间宿">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="风间宿的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="用python实现天气预报助手 | 风间宿的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          用python实现天气预报助手
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-01-11 21:18:02" itemprop="dateCreated datePublished" datetime="2022-01-11T21:18:02+08:00">2022-01-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-05-30 22:10:54" itemprop="dateModified" datetime="2024-05-30T22:10:54+08:00">2024-05-30</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>借助github action实现自动化</p>
+<span id="more"></span>
+<h2 id="背景">背景</h2>
+<p>今年天气变化莫测，一会儿30多度一会儿10几度，就想着要不写个自动脚本，监测明后两天是否有雨，或者气温是否极度变化，有的话就发个邮件通知下</p>
+<h2 id="思路">思路</h2>
+<p>通过查询，了解到<a target="_blank" rel="noopener" href="https://dev.qweather.com/docs/api/weather/weather-daily-forecast/">和风天气api</a>免费版本支持每日预报(3-7天)请求次数1000次对于个人用户远超所需了，因此只需要借助api获取返回的json文件，再根据获取到的信息进行处理即可</p>
+<h2 id="实现">实现</h2>
+<h3 id="获取天气">获取天气</h3>
+<p><a target="_blank" rel="noopener" href="https://dev.qweather.com/docs/api/weather/weather-daily-forecast/">和风天气API使用方法</a><br>
+url为&quot;<a target="_blank" rel="noopener" href="https://devapi.qweather.com/v7/weather/3d">https://devapi.qweather.com/v7/weather/3d</a>&quot;<br>
+参数只需确定城市<a target="_blank" rel="noopener" href="https://dev.qweather.com/docs/api/geoapi/">城市搜索服务</a>和key<a target="_blank" rel="noopener" href="https://dev.qweather.com/docs/configuration/project-and-key/">如何获取你的key</a><br>
+通过python的request包(需要额外安装)的get方法得到</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">getWeather</span>(<span class="params">url, params</span>):</span><br><span class="line">    response = requests.get(url, params, timeout=<span class="number">30</span>)</span><br><span class="line">    response.encoding = response.apparent_encoding</span><br><span class="line">    html = response.text</span><br><span class="line">    js = json.loads(html)</span><br><span class="line">    daily = js[<span class="string">&quot;daily&quot;</span>]</span><br><span class="line">    state1 = isSend(daily[<span class="number">0</span>], daily[<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&quot;True&quot;</span> <span class="keyword">in</span> state1):</span><br><span class="line">        send(state1[<span class="string">&quot;True&quot;</span>], <span class="string">&quot;明天&quot;</span>, daily[<span class="number">1</span>])</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    state2 = isSend(daily[<span class="number">0</span>], daily[<span class="number">2</span>])</span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&quot;True&quot;</span> <span class="keyword">in</span> state2):</span><br><span class="line">        send(state2[<span class="string">&quot;True&quot;</span>], <span class="string">&quot;明天&quot;</span>, daily[<span class="number">2</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="判断是否需要发送">判断是否需要发送</h3>
+<p>初始化一个字典，通过setdefault()方法，返回键值如果键值不存在，插入键，且对应的value默认为None<br>
+判断温差，雨雪，风力，紫外线是否需要注意，是的话添加True的键值，并且对应的value要通过累加字符串的方式更新</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">isSend</span>(<span class="params">today, tomorrow</span>):</span><br><span class="line">    state = &#123;&#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">abs</span>(<span class="built_in">int</span>(today[<span class="string">&quot;tempMax&quot;</span>])-<span class="built_in">int</span>(tomorrow[<span class="string">&quot;tempMax&quot;</span>])) &gt; <span class="number">6</span>):</span><br><span class="line">        state[<span class="string">&quot;True&quot;</span>] = state.setdefault(<span class="string">&quot;True&quot;</span>, <span class="string">&quot;&quot;</span>) + <span class="string">&quot;温度&quot;</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&quot;雨&quot;</span> <span class="keyword">in</span> tomorrow[<span class="string">&quot;textDay&quot;</span>] <span class="keyword">or</span> <span class="string">&quot;雪&quot;</span> <span class="keyword">in</span> tomorrow[<span class="string">&quot;textDay&quot;</span>] <span class="keyword">or</span> <span class="string">&quot;雨&quot;</span> <span class="keyword">in</span> tomorrow[<span class="string">&quot;textNight&quot;</span>] <span class="keyword">or</span> <span class="string">&quot;雪&quot;</span> <span class="keyword">in</span> tomorrow[<span class="string">&quot;textNight&quot;</span>]):</span><br><span class="line">        state[<span class="string">&quot;True&quot;</span>] = state.setdefault(<span class="string">&quot;True&quot;</span>, <span class="string">&quot;&quot;</span>) + <span class="string">&quot;天气&quot;</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">int</span>(tomorrow[<span class="string">&quot;windScaleDay&quot;</span>][<span class="number">0</span>]) &gt; <span class="number">4</span>):</span><br><span class="line">        state[<span class="string">&quot;True&quot;</span>] = state.setdefault(<span class="string">&quot;True&quot;</span>, <span class="string">&quot;&quot;</span>) + <span class="string">&quot;风&quot;</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">int</span>(tomorrow[<span class="string">&quot;uvIndex&quot;</span>]) &gt; <span class="number">4</span>):</span><br><span class="line">        state[<span class="string">&quot;True&quot;</span>] = state.setdefault(<span class="string">&quot;True&quot;</span>, <span class="string">&quot;&quot;</span>) + <span class="string">&quot;紫外线&quot;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        state[<span class="string">&#x27;False&#x27;</span>] = <span class="string">&quot;没有特殊情况&quot;</span></span><br><span class="line">    <span class="keyword">return</span> state</span><br></pre></td></tr></table></figure>
+<h3 id="发送信息">发送信息</h3>
+<p>根据之前返回的四种情况加上提示语句</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">getMessage</span>(<span class="params">state, day</span>):</span><br><span class="line">    message = <span class="string">&quot;您的天气小助手提醒您：\n&quot;</span></span><br><span class="line">    message += day</span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&quot;温度&quot;</span> <span class="keyword">in</span> state):</span><br><span class="line">        message += <span class="string">&quot;的气温变化幅度大，记得增添衣服哟(提前准备好)\n&quot;</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&quot;天气&quot;</span> <span class="keyword">in</span> state):</span><br><span class="line">        message += <span class="string">&quot;可能会出现雨雪天气，记得带伞\n&quot;</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&quot;风&quot;</span> <span class="keyword">in</span> state):</span><br><span class="line">        message += <span class="string">&quot;风力过大,出门小心\n&quot;</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&quot;紫外线&quot;</span> <span class="keyword">in</span> state):</span><br><span class="line">        message += <span class="string">&quot;紫外线强度过高，出门做好防晒\n&quot;</span></span><br><span class="line">    message += day+<span class="string">&quot;具体天气如下：\n&quot;</span></span><br><span class="line">    <span class="keyword">return</span> message</span><br></pre></td></tr></table></figure>
+<p>把获取到的天气转化为字符串，自己定义一个字典key_str key为天气里面的key，value则是对应的字符串<br>
+这样通过遍历key_str里的key值就可以把对应的字符串即相应的数值组合到一起</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">key_str = &#123;</span><br><span class="line">    <span class="string">&quot;tempMax&quot;</span>: <span class="string">&quot;最高温度&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tempMin&quot;</span>: <span class="string">&quot;最低温度&quot;</span>,</span><br><span class="line">    <span class="string">&quot;textDay&quot;</span>: <span class="string">&quot;白天天气&quot;</span>,</span><br><span class="line">    <span class="string">&quot;textNight&quot;</span>: <span class="string">&quot;夜间天气&quot;</span>,</span><br><span class="line">    <span class="string">&quot;windDirDay&quot;</span>: <span class="string">&quot;白天风向&quot;</span>,</span><br><span class="line">    <span class="string">&quot;windScaleDay&quot;</span>: <span class="string">&quot;白天风力&quot;</span>,</span><br><span class="line">    <span class="string">&quot;windSpeedDay&quot;</span>: <span class="string">&quot;白天风速&quot;</span>,</span><br><span class="line">    <span class="string">&quot;windDirNight&quot;</span>: <span class="string">&quot;夜间风向&quot;</span>,</span><br><span class="line">    <span class="string">&quot;windScaleNight&quot;</span>: <span class="string">&quot;夜间风力&quot;</span>,</span><br><span class="line">    <span class="string">&quot;windSpeedNight&quot;</span>: <span class="string">&quot;夜间风速&quot;</span>,</span><br><span class="line">    <span class="string">&quot;precip&quot;</span>: <span class="string">&quot;总降水量&quot;</span>,</span><br><span class="line">    <span class="string">&quot;uvIndex&quot;</span>: <span class="string">&quot;紫外线强度指数&quot;</span>,</span><br><span class="line">    <span class="string">&quot;humidity&quot;</span>: <span class="string">&quot;相对湿度&quot;</span>,</span><br><span class="line">    <span class="string">&quot;vis&quot;</span>: <span class="string">&quot;能见度&quot;</span>,</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">wheather_msg</span>(<span class="params">wheather</span>):</span><br><span class="line">    message = wheather[<span class="string">&quot;fxDate&quot;</span>]+<span class="string">&quot;\n&quot;</span></span><br><span class="line">    <span class="keyword">for</span> key <span class="keyword">in</span> key_str.keys():</span><br><span class="line">        key_str[key] += <span class="string">&quot;:&quot;</span>+wheather[key]</span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;温度&quot;</span> <span class="keyword">in</span> key_str[key]):</span><br><span class="line">            key_str[key] += <span class="string">&quot;度&quot;</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;风力&quot;</span> <span class="keyword">in</span> key_str[key]):</span><br><span class="line">            key_str[key] += <span class="string">&quot;级&quot;</span></span><br><span class="line">        <span class="keyword">if</span> ((<span class="string">&quot;风速&quot;</span> <span class="keyword">in</span> key_str[key])):</span><br><span class="line">            key_str[key] += <span class="string">&quot;公里/h&quot;</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;降水量&quot;</span> <span class="keyword">in</span> key_str[key]):</span><br><span class="line">            key_str[key] += <span class="string">&quot;毫米&quot;</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;能见度&quot;</span> <span class="keyword">in</span> key_str[key]):</span><br><span class="line">            key_str[key] += <span class="string">&quot;公里&quot;</span></span><br><span class="line">        key_str[key] += <span class="string">&quot;\n&quot;</span></span><br><span class="line">        message += key_str[key]</span><br><span class="line">    <span class="keyword">return</span> message</span><br></pre></td></tr></table></figure>
+<h2 id="发邮件">发邮件</h2>
+<p>需要QQ邮箱开通SMTP服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">from email.mime.text import MIMEText</span><br><span class="line">import smtplib</span><br><span class="line">import time</span><br><span class="line">def sendEmail(message):</span><br><span class="line">    msg_from = &#x27;&#x27;  # 发送方邮箱</span><br><span class="line">    passwd = &#x27;&#x27;  # 发送方邮箱的授权码</span><br><span class="line">    msg_to = &#x27;&#x27;  # 收件人邮箱</span><br><span class="line"></span><br><span class="line">    subject = &quot;天气预报&quot;  # 主题</span><br><span class="line">    msg = MIMEText(message)</span><br><span class="line">    msg[&#x27;Subject&#x27;] = subject</span><br><span class="line">    msg[&#x27;From&#x27;] = msg_from</span><br><span class="line">    msg[&#x27;To&#x27;] = msg_to</span><br><span class="line">    try:</span><br><span class="line">        s = smtplib.SMTP_SSL(&quot;smtp.qq.com&quot;, 465)  # 邮件服务器及端口号</span><br><span class="line">        s.login(msg_from, passwd)</span><br><span class="line">        s.sendmail(msg_from, msg_to, msg.as_string())</span><br><span class="line">        print(&#x27;[&#x27; + str(time.strftime(&#x27;%Y-%m-%d %H:%M:%S&#x27;,</span><br><span class="line">                                      time.localtime(time.time()))) + &quot;]邮件发送成功,邮件内容：&quot; + message)</span><br><span class="line">    except s.SMTPException:</span><br><span class="line">        print(&#x27;[&#x27; + str(time.strftime(&#x27;%Y-%m-%d %H:%M:%S&#x27;,</span><br><span class="line">                                      time.localtime(time.time()))) + &quot;]邮件发送失败,邮件内容：&quot; + message)</span><br><span class="line">    finally:</span><br><span class="line">        s.quit()</span><br></pre></td></tr></table></figure>
+<p>[借助github的Action服务]</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vscode/" rel="tag"># vscode</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/Github-Action/" rel="tag"># Github Action</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/zh/null/" rel="next" title="侯捷——C++11 14标准库">
+                  侯捷——C++11 14标准库 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">风间宿</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
